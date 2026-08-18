@@ -3,6 +3,7 @@ import api from '../services/api';
 import WorkoutCard from '../components/WorkoutCard';
 import WorkoutForm from '../components/WorkoutForm';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import ExportButton from '../components/ExportButton';
 import {
   Dumbbell,
   Plus,
@@ -159,13 +160,17 @@ export default function Workouts() {
           </p>
         </div>
 
-        <button
-          onClick={handleOpenCreate}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-bold text-sm transition duration-150 cursor-pointer shadow-lg shadow-emerald-500/20 shrink-0"
-        >
-          <Plus className="h-4 w-4" />
-          New Workout
-        </button>
+        <div className="flex items-center gap-2.5 shrink-0">
+          <ExportButton endpoint="/export/workouts" resourceName="workouts" />
+
+          <button
+            onClick={handleOpenCreate}
+            className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-bold text-xs sm:text-sm transition duration-150 cursor-pointer shadow-lg shadow-emerald-500/20"
+          >
+            <Plus className="h-4 w-4" />
+            <span>New Workout</span>
+          </button>
+        </div>
       </div>
 
       {/* Filter Toolbar */}

@@ -9,6 +9,7 @@ import nutritionRoutes from './routes/nutritionRoutes.js';
 import progressRoutes from './routes/progressRoutes.js';
 import searchRoutes from './routes/searchRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import exportRoutes from './routes/exportRoutes.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 // Load environment variables
@@ -41,6 +42,7 @@ app.use('/api/nutrition', nutritionRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/search', searchRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/export', exportRoutes);
 
 // Root test endpoint
 app.get('/', (req, res) => {

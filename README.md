@@ -1,6 +1,6 @@
 # 🏋️ Fitness Tracker (MERN Stack)
 
-A clean, modular **MERN Stack** (MongoDB, Express.js, React, Node.js) application with fullstack authentication, workout logging, daily nutrition tracking, progress charts, cross-module search, and milestone notifications.
+A clean, modular **MERN Stack** (MongoDB, Express.js, React, Node.js) application with fullstack authentication, workout logging, daily nutrition tracking, progress charts, cross-module search, milestone notifications, and CSV/PDF data export.
 
 ---
 
@@ -13,6 +13,7 @@ fitness-tracker/
 │   │   └── db.js             # Mongoose connection logic
 │   ├── controllers/
 │   │   ├── authController.js # Register, Login, Me, Profile controllers
+│   │   ├── exportController.js# Workouts & Nutrition CSV/PDF generator
 │   │   ├── healthController.js # Route controller logic
 │   │   ├── notificationController.js# Notifications list & mark-as-read
 │   │   ├── nutritionController.js# Nutrition CRUD & daily summary aggregation
@@ -35,6 +36,7 @@ fitness-tracker/
 │   │   └── index.js          # Barrel exports
 │   ├── routes/               # Express API routes
 │   │   ├── authRoutes.js     # /api/auth endpoints
+│   │   ├── exportRoutes.js   # /api/export endpoints (CSV / PDF)
 │   │   ├── healthRoutes.js   # /api/health endpoint
 │   │   ├── notificationRoutes.js# /api/notifications endpoints
 │   │   ├── nutritionRoutes.js# /api/nutrition endpoints
@@ -48,7 +50,7 @@ fitness-tracker/
 │
 ├── frontend/                 # React 19 + Vite + Tailwind CSS Client
 │   ├── src/
-│   │   ├── components/       # Reusable UI (Header, SearchBar, NotificationBell, WorkoutCard, MealSection, TrendsChart, MeasurementCards, ProgressForm, DeleteConfirmModal)
+│   │   ├── components/       # Reusable UI (Header, SearchBar, NotificationBell, ExportButton, WorkoutCard, MealSection, TrendsChart, MeasurementCards, ProgressForm, DeleteConfirmModal)
 │   │   ├── context/          # AuthContext (token storage, global auth state & theme sync)
 │   │   ├── hooks/            # Custom React hooks
 │   │   ├── pages/            # Page views (HomePage, Login, Register, Dashboard, Workouts, Nutrition, Progress, Settings)
@@ -208,6 +210,13 @@ fitness-tracker/
 |---|---|---|---|
 | `GET` | `/api/notifications` | List user's notifications and unread count | Yes (Bearer Token) |
 | `PUT` | `/api/notifications/:id/read` | Mark a notification as read | Yes (Bearer Token) |
+
+### 📥 Data Export (`/api/export`)
+
+| Method | Endpoint | Description | Query Parameters | Auth Required |
+|---|---|---|---|---|
+| `GET` | `/api/export/workouts` | Export workouts log as CSV or PDF | `format=csv\|pdf` | Yes (Bearer Token) |
+| `GET` | `/api/export/nutrition` | Export nutrition entries as CSV or PDF | `format=csv\|pdf` | Yes (Bearer Token) |
 
 ---
 

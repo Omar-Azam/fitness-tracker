@@ -3,6 +3,7 @@ import api from '../services/api';
 import MealSection from '../components/MealSection';
 import NutritionEntryForm from '../components/NutritionEntryForm';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import ExportButton from '../components/ExportButton';
 import {
   Utensils,
   Plus,
@@ -189,39 +190,43 @@ export default function Nutrition() {
           </p>
         </div>
 
-        {/* Date Selector Bar */}
-        <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 p-1.5 rounded-2xl shadow-lg">
-          <button
-            onClick={handlePrevDay}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-            title="Previous Day"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
+        {/* Actions & Date Selector Bar */}
+        <div className="flex flex-wrap items-center gap-3">
+          <ExportButton endpoint="/export/nutrition" resourceName="nutrition" />
 
-          <input
-            type="date"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
-            className="bg-transparent text-white text-xs sm:text-sm font-semibold focus:outline-none px-2 cursor-pointer font-mono"
-          />
-
-          {!isToday && (
+          <div className="flex items-center gap-2 bg-slate-900 border border-slate-800 p-1.5 rounded-2xl shadow-lg">
             <button
-              onClick={handleToday}
-              className="text-[11px] font-bold px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition cursor-pointer"
+              onClick={handlePrevDay}
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+              title="Previous Day"
             >
-              Today
+              <ChevronLeft className="h-4 w-4" />
             </button>
-          )}
 
-          <button
-            onClick={handleNextDay}
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-            title="Next Day"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
+            <input
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="bg-transparent text-white text-xs sm:text-sm font-semibold focus:outline-none px-2 cursor-pointer font-mono"
+            />
+
+            {!isToday && (
+              <button
+                onClick={handleToday}
+                className="text-[11px] font-bold px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition cursor-pointer"
+              >
+                Today
+              </button>
+            )}
+
+            <button
+              onClick={handleNextDay}
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+              title="Next Day"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
 
