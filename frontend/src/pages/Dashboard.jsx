@@ -77,24 +77,33 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 border border-emerald-500/20 rounded-2xl p-5 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-3 rounded-xl bg-emerald-500/20 text-emerald-400">
-            <User className="h-6 w-6" />
-          </div>
+      {/* Quick Actions Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-2xl p-5 flex items-center justify-between gap-4">
           <div>
-            <h3 className="font-bold text-white text-sm sm:text-base">Ready for your workout?</h3>
-            <p className="text-xs text-slate-400">Log your sets, reps, and track exercise progress.</p>
+            <h3 className="font-bold text-white text-sm sm:text-base">Workout Log</h3>
+            <p className="text-xs text-slate-400 mt-0.5">Track exercises, sets, reps & routines.</p>
           </div>
+          <a
+            href="/workouts"
+            className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-bold text-xs transition shrink-0 shadow-md shadow-emerald-500/20"
+          >
+            Workouts
+          </a>
         </div>
 
-        <a
-          href="/workouts"
-          className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-bold text-xs transition shrink-0 shadow-md shadow-emerald-500/20"
-        >
-          View Workouts
-        </a>
+        <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-2xl p-5 flex items-center justify-between gap-4">
+          <div>
+            <h3 className="font-bold text-white text-sm sm:text-base">Nutrition & Meals</h3>
+            <p className="text-xs text-slate-400 mt-0.5">Log calories, macros & daily intake.</p>
+          </div>
+          <a
+            href="/nutrition"
+            className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-350 text-slate-950 font-bold text-xs transition shrink-0 shadow-md shadow-amber-400/20"
+          >
+            Nutrition
+          </a>
+        </div>
       </div>
 
       {/* Profile & Preferences Form */}

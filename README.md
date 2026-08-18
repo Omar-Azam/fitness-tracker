@@ -1,6 +1,6 @@
 # 🏋️ Fitness Tracker (MERN Stack)
 
-A clean, modular **MERN Stack** (MongoDB, Express.js, React, Node.js) application with fullstack authentication and comprehensive workout tracking.
+A clean, modular **MERN Stack** (MongoDB, Express.js, React, Node.js) application with fullstack authentication, workout logging, and daily nutrition tracking.
 
 ---
 
@@ -14,22 +14,25 @@ fitness-tracker/
 │   ├── controllers/
 │   │   ├── authController.js # Register, Login, Me, Profile controllers
 │   │   ├── healthController.js # Route controller logic
+│   │   ├── nutritionController.js# Nutrition CRUD & daily summary aggregation
 │   │   └── workoutController.js# Workout CRUD, filters & pagination
 │   ├── middleware/
 │   │   ├── auth.js           # JWT Bearer authentication middleware
 │   │   ├── errorMiddleware.js# Central error and 404 handler
+│   │   ├── nutritionValidator.js# Nutrition validation middleware
 │   │   ├── validator.js      # Auth validation middleware
 │   │   └── workoutValidator.js# Workout validation middleware
 │   ├── models/               # Mongoose schema definitions
 │   │   ├── User.js           # User model with bcrypt & validation
 │   │   ├── Workout.js        # Workout model with exercise subdocuments
-│   │   ├── NutritionEntry.js # Nutrition logging model
+│   │   ├── NutritionEntry.js # Nutrition logging model with food items
 │   │   ├── ProgressLog.js    # Progress & metrics model
 │   │   ├── Notification.js   # Notification model
 │   │   └── index.js          # Barrel exports
 │   ├── routes/               # Express API routes
 │   │   ├── authRoutes.js     # /api/auth endpoints
 │   │   ├── healthRoutes.js   # /api/health endpoint
+│   │   ├── nutritionRoutes.js# /api/nutrition endpoints
 │   │   └── workoutRoutes.js  # /api/workouts endpoints
 │   ├── .env.example          # Sample environment variables
 │   ├── .env                  # Local environment file (git-ignored)
@@ -38,10 +41,10 @@ fitness-tracker/
 │
 ├── frontend/                 # React 19 + Vite + Tailwind CSS Client
 │   ├── src/
-│   │   ├── components/       # Reusable UI (Header, WorkoutCard, WorkoutForm, DeleteConfirmModal)
+│   │   ├── components/       # Reusable UI (Header, WorkoutCard, WorkoutForm, MealSection, NutritionEntryForm, DeleteConfirmModal)
 │   │   ├── context/          # AuthContext (token storage & global auth state)
 │   │   ├── hooks/            # Custom React hooks
-│   │   ├── pages/            # Page views (HomePage, Login, Register, Dashboard, Workouts)
+│   │   ├── pages/            # Page views (HomePage, Login, Register, Dashboard, Workouts, Nutrition)
 │   │   ├── services/
 │   │   │   └── api.js        # Configured Axios instance with auth interceptor
 │   │   ├── App.jsx           # React Router & AuthProvider configuration
@@ -160,6 +163,18 @@ fitness-tracker/
 | `GET` | `/api/workouts/:id` | Get single workout by ID | — | Yes (Bearer Token) |
 | `PUT` | `/api/workouts/:id` | Update workout | — | Yes (Bearer Token) |
 | `DELETE` | `/api/workouts/:id` | Delete workout | — | Yes (Bearer Token) |
+
+### 🥗 Nutrition (`/api/nutrition`)
+
+*All nutrition endpoints are user-scoped with strict isolation.*
+
+| Method | Endpoint | Description | Query Parameters | Auth Required |
+|---|---|---|---|---|
+| `GET` | `/api/nutrition` | List user's nutrition entries | `date`, `mealType`, `from`, `to` | Yes (Bearer Token) |
+| `GET` | `/api/nutrition/summary` | Get day totals (`totalCalories`, `totalProtein`, `totalCarbs`, `totalFat`) | `date=YYYY-MM-DD` | Yes (Bearer Token) |
+| `POST` | `/api/nutrition` | Create a nutrition entry | — | Yes (Bearer Token) |
+| `PUT` | `/api/nutrition/:id` | Update nutrition entry | — | Yes (Bearer Token) |
+| `DELETE` | `/api/nutrition/:id` | Delete nutrition entry | — | Yes (Bearer Token) |
 
 ---
 
