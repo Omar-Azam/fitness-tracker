@@ -1,10 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import TrendsChart from '../components/TrendsChart';
 import MeasurementCards from '../components/MeasurementCards';
 import ProgressForm from '../components/ProgressForm';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
+import PageHeader from '../components/PageHeader';
+import {
+  ChartSkeleton,
+  MeasurementSkeleton,
+  CardSkeleton,
+} from '../components/Skeletons';
 import {
   TrendingUp,
   Scale,
@@ -21,6 +28,7 @@ import {
 
 export default function Progress() {
   const { user } = useAuth();
+  const toast = useToast();
   const weightUnit = user?.preferences?.units === 'imperial' ? 'lbs' : 'kg';
   const lengthUnit = user?.preferences?.units === 'imperial' ? 'in' : 'cm';
 
@@ -62,21 +70,20 @@ export default function Progress() {
       setWeightTrend(weightTrendRes.data.points || []);
 
       const avail = weightTrendRes.data.availableMetrics || [];
-      // Filter out weight from available custom metrics since weight has its own dedicated chart
       const nonWeightMetrics = avail.filter((m) => m.toLowerCase() !== 'weight');
       setAvailableMetrics(nonWeightMetrics);
 
-      // If selectedMetric is not in availableMetrics and availableMetrics has items, pick the first one
       if (nonWeightMetrics.length > 0 && !nonWeightMetrics.includes(selectedMetric)) {
         setSelectedMetric(nonWeightMetrics[0]);
       }
     } catch (err) {
       console.error('Failed to load progress data:', err);
       setError(err.message || 'Failed to load progress logs');
+      toast.error('Failed to load progress logs');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [selectedMetric]);
 
   useEffect(() => {
     fetchData();
@@ -109,8 +116,10 @@ export default function Progress() {
     try {
       if (editingLog?._id) {
         await api.put(`/progress/${editingLog._id}`, payload);
+        toast.success('Progress log updated! 📊');
       } else {
         await api.post('/progress', payload);
+        toast.success('New progress entry recorded! 📈');
       }
       setIsFormOpen(false);
       setEditingLog(null);
@@ -118,6 +127,8 @@ export default function Progress() {
       if (selectedMetric) {
         await fetchCustomMetricTrend(selectedMetric);
       }
+    } catch (err) {
+      toast.error(err.message || 'Failed to save progress log');
     } finally {
       setIsSubmitting(false);
     }
@@ -129,13 +140,14 @@ export default function Progress() {
     setIsDeleting(true);
     try {
       await api.delete(`/progress/${logToDelete._id}`);
+      toast.success('Progress log deleted');
       setLogToDelete(null);
       await fetchData();
       if (selectedMetric) {
         await fetchCustomMetricTrend(selectedMetric);
       }
     } catch (err) {
-      alert(err.message || 'Failed to delete log');
+      toast.error(err.message || 'Failed to delete log');
     } finally {
       setIsDeleting(false);
     }
@@ -145,106 +157,108 @@ export default function Progress() {
   const previousLog = logs[1] || null;
 
   return (
-    <div className="max-w-6xl mx-auto py-8 space-y-8 px-4">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Progress & Body Analytics
-            </h1>
-            <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              {logs.length} {logs.length === 1 ? 'log' : 'logs'}
-            </span>
-          </div>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Monitor weight fluctuations, circumference shifts, and performance personal records
-          </p>
-        </div>
+    <div className="max-w-6xl mx-auto py-6 sm:py-8 space-y-6 sm:space-y-8 px-2 sm:px-4">
+      {/* Header Bar */}
+      <PageHeader
+        title="Progress & Trends"
+        subtitle="Monitor body measurements, weight progression, and custom athletic metrics"
+        count={logs.length}
+        countLabel="logs"
+        actions={
+          <button
+            onClick={() => {
+              setEditingLog(null);
+              setIsFormOpen(true);
+            }}
+            className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-bold text-xs sm:text-sm transition duration-150 cursor-pointer shadow-lg shadow-emerald-500/20"
+          >
+            <Plus className="h-4 w-4" />
+            <span>Log New Entry</span>
+          </button>
+        }
+      />
 
-        <button
-          onClick={() => {
-            setEditingLog(null);
-            setIsFormOpen(true);
-          }}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-bold text-xs sm:text-sm transition cursor-pointer shadow-lg shadow-emerald-500/20 shrink-0"
-        >
-          <Plus className="h-4 w-4" />
-          <span>Log Progress</span>
-        </button>
-      </div>
-
-      {/* Body Measurements Delta Cards */}
-      <div className="space-y-3">
+      {/* Body Measurements Section */}
+      <div className="space-y-3 sm:space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
-            <Ruler className="h-4 w-4 text-cyan-400" />
-            Current Stats vs. Previous Entry
-          </h2>
+          <div className="flex items-center gap-2">
+            <Ruler className="h-5 w-5 text-emerald-400" />
+            <h2 className="text-base sm:text-lg font-bold text-white">
+              Body Measurements
+            </h2>
+          </div>
           {latestLog?.date && (
-            <span className="text-xs text-slate-500 font-mono">
-              Last updated: {new Date(latestLog.date).toLocaleDateString()}
+            <span className="text-[11px] text-slate-400 font-mono">
+              Latest: {new Date(latestLog.date).toLocaleDateString()}
             </span>
           )}
         </div>
 
-        <MeasurementCards
-          latestLog={latestLog}
-          previousLog={previousLog}
-          weightUnit={weightUnit}
-          lengthUnit={lengthUnit}
-        />
+        {loading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            <MeasurementSkeleton />
+            <MeasurementSkeleton />
+            <MeasurementSkeleton />
+            <MeasurementSkeleton />
+            <MeasurementSkeleton />
+          </div>
+        ) : (
+          <MeasurementCards
+            latestLog={latestLog}
+            previousLog={previousLog}
+            lengthUnit={lengthUnit}
+          />
+        )}
       </div>
 
-      {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Chart 1: Weight Progression */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                <Scale className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-white">Weight Over Time</h3>
-                <p className="text-xs text-slate-400">Progression curve in {weightUnit}</p>
-              </div>
-            </div>
-
-            {weightTrend.length > 0 && (
-              <span className="text-xs font-mono px-2.5 py-1 rounded-xl bg-slate-950 text-emerald-400 border border-slate-800">
-                Latest: {weightTrend[weightTrend.length - 1].value} {weightUnit}
-              </span>
-            )}
+      {/* Weight Over Time Chart */}
+      <div className="space-y-3 sm:space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Scale className="h-5 w-5 text-cyan-400" />
+            <h2 className="text-base sm:text-lg font-bold text-white">
+              Weight Progression
+            </h2>
           </div>
-
-          <TrendsChart
-            data={weightTrend}
-            metricName="Weight"
-            unit={weightUnit}
-            color="#10b981"
-            height={260}
-          />
         </div>
 
-        {/* Chart 2: Custom Performance / Body Metric */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                <Trophy className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-white">Metric Trends & PRs</h3>
-                <p className="text-xs text-slate-400">Track benchmarks & circumferences</p>
-              </div>
-            </div>
+        {loading ? (
+          <ChartSkeleton />
+        ) : (
+          <TrendsChart
+            title="Weight Over Time"
+            data={weightTrend}
+            unit={weightUnit}
+            color="#06b6d4"
+            height={280}
+          />
+        )}
+      </div>
 
-            {/* Metric Selector Dropdown */}
+      {/* Custom Metric Trend Chart */}
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <Trophy className="h-5 w-5 text-amber-400" />
+            <div>
+              <h2 className="text-base sm:text-lg font-bold text-white">
+                Custom Performance & Measurement Trends
+              </h2>
+              <p className="text-xs text-slate-400">
+                Select any tracked measurement or user-defined athletic metric
+              </p>
+            </div>
+          </div>
+
+          {/* Metric Selector Dropdown */}
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-semibold text-slate-400 whitespace-nowrap">
+              Select Metric:
+            </label>
             <select
               value={selectedMetric}
               onChange={(e) => setSelectedMetric(e.target.value)}
-              className="px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs font-semibold focus:outline-none focus:border-cyan-500 capitalize cursor-pointer"
+              className="px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-white focus:outline-none focus:border-amber-500 font-medium capitalize"
             >
               {availableMetrics.map((m) => (
                 <option key={m} value={m}>
@@ -253,142 +267,150 @@ export default function Progress() {
               ))}
             </select>
           </div>
-
-          {loadingCustomTrend ? (
-            <div className="h-[260px] flex items-center justify-center">
-              <div className="w-6 h-6 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" />
-            </div>
-          ) : (
-            <TrendsChart
-              data={customMetricTrend}
-              metricName={selectedMetric}
-              unit={customMetricUnit || lengthUnit}
-              color="#06b6d4" // cyan-500
-              height={260}
-            />
-          )}
-        </div>
-      </div>
-
-      {/* Progress History Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-5 sm:p-6 shadow-xl space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Clock className="h-5 w-5 text-slate-400" />
-            <h3 className="text-base font-bold text-white">Log History</h3>
-          </div>
-          <span className="text-xs text-slate-400">{logs.length} entries</span>
         </div>
 
-        {logs.length === 0 ? (
-          <div className="text-center py-10 px-4 rounded-xl border border-dashed border-slate-800 bg-slate-950/40 text-slate-400 text-xs">
-            No progress logs recorded yet. Click "+ Log Progress" above to start your baseline!
+        {loadingCustomTrend ? (
+          <div className="h-56 bg-slate-950/60 border border-slate-800/40 rounded-xl flex items-center justify-center animate-pulse">
+            <span className="text-xs text-slate-500">Loading trend...</span>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-slate-300">
-              <thead className="bg-slate-950 text-slate-400 uppercase font-semibold border-b border-slate-800">
-                <tr>
-                  <th className="py-3 px-4">Date</th>
-                  <th className="py-3 px-4">Weight</th>
-                  <th className="py-3 px-4">Chest / Waist / Hips</th>
-                  <th className="py-3 px-4">Arms / Thighs</th>
-                  <th className="py-3 px-4">PRs & Metrics</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/80">
-                {logs.map((log) => (
-                  <tr key={log._id} className="hover:bg-slate-800/30 transition">
-                    <td className="py-3 px-4 font-mono font-medium text-white whitespace-nowrap">
-                      {log.date ? new Date(log.date).toLocaleDateString() : 'N/A'}
-                    </td>
-                    <td className="py-3 px-4 font-mono text-emerald-400 font-bold whitespace-nowrap">
-                      {log.weight !== undefined && log.weight !== null
-                        ? `${log.weight} ${weightUnit}`
-                        : '--'}
-                    </td>
-                    <td className="py-3 px-4 font-mono text-slate-400 whitespace-nowrap">
-                      {log.bodyMeasurements?.chest ?? '--'} /{' '}
-                      {log.bodyMeasurements?.waist ?? '--'} /{' '}
-                      {log.bodyMeasurements?.hips ?? '--'}{' '}
-                      <span className="text-[10px] text-slate-500">{lengthUnit}</span>
-                    </td>
-                    <td className="py-3 px-4 font-mono text-slate-400 whitespace-nowrap">
-                      {log.bodyMeasurements?.arms ?? '--'} /{' '}
-                      {log.bodyMeasurements?.thighs ?? '--'}{' '}
-                      <span className="text-[10px] text-slate-500">{lengthUnit}</span>
-                    </td>
-                    <td className="py-3 px-4">
-                      {log.performanceMetrics && log.performanceMetrics.length > 0 ? (
-                        <div className="flex flex-wrap gap-1.5">
-                          {log.performanceMetrics.map((pm, idx) => (
-                            <span
-                              key={idx}
-                              className="px-2 py-0.5 rounded-md bg-slate-950 text-[10px] font-mono text-cyan-300 border border-slate-800"
-                            >
-                              {pm.metricName}: {pm.value} {pm.unit}
-                            </span>
-                          ))}
-                        </div>
-                      ) : (
-                        <span className="text-slate-500">--</span>
+          <TrendsChart
+            title={`${selectedMetric.toUpperCase()} Trend`}
+            data={customMetricTrend}
+            unit={customMetricUnit}
+            color="#f59e0b"
+            height={240}
+          />
+        )}
+      </div>
+
+      {/* Progress History Log Table / Cards */}
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-5 w-5 text-emerald-400" />
+            <h2 className="text-base font-bold text-white">Log History</h2>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="space-y-3">
+            <CardSkeleton />
+            <CardSkeleton />
+          </div>
+        ) : logs.length === 0 ? (
+          <div className="text-center py-8 px-4 rounded-xl border border-dashed border-slate-800 bg-slate-950/40 text-slate-400 text-xs">
+            No progress entries recorded yet. Click "Log New Entry" above to start your tracking journey.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {logs.map((log) => {
+              const dateStr = log.date
+                ? new Date(log.date).toLocaleDateString(undefined, {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                  })
+                : 'N/A';
+
+              const m = log.bodyMeasurements || {};
+              const perf = log.performanceMetrics || [];
+
+              return (
+                <div
+                  key={log._id}
+                  className="bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-700 transition"
+                >
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-sm font-bold text-white">{dateStr}</span>
+                      {log.weight !== undefined && log.weight !== null && (
+                        <span className="text-xs font-mono font-bold text-cyan-300 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">
+                          {log.weight} {weightUnit}
+                        </span>
                       )}
-                    </td>
-                    <td className="py-3 px-4 text-right whitespace-nowrap">
-                      <div className="inline-flex items-center gap-1.5">
-                        <button
-                          onClick={() => {
-                            setEditingLog(log);
-                            setIsFormOpen(true);
-                          }}
-                          className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
-                          title="Edit log"
-                        >
-                          <Edit2 className="h-3.5 w-3.5" />
-                        </button>
-                        <button
-                          onClick={() => setLogToDelete(log)}
-                          className="p-1 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
-                          title="Delete log"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+
+                    {/* Summary Badges */}
+                    <div className="flex flex-wrap gap-2 text-[11px] text-slate-400">
+                      {m.waist && (
+                        <span className="bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                          Waist: {m.waist} {lengthUnit}
+                        </span>
+                      )}
+                      {m.chest && (
+                        <span className="bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                          Chest: {m.chest} {lengthUnit}
+                        </span>
+                      )}
+                      {m.arms && (
+                        <span className="bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                          Arms: {m.arms} {lengthUnit}
+                        </span>
+                      )}
+                      {perf.length > 0 &&
+                        perf.map((p, idx) => (
+                          <span
+                            key={idx}
+                            className="bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded border border-amber-500/20"
+                          >
+                            {p.metricName}: {p.value} {p.unit}
+                          </span>
+                        ))}
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                    <button
+                      onClick={() => {
+                        setEditingLog(log);
+                        setIsFormOpen(true);
+                      }}
+                      className="p-2 rounded-lg bg-slate-900 text-slate-400 hover:text-emerald-400 hover:bg-slate-800 transition cursor-pointer"
+                      title="Edit Log"
+                    >
+                      <Edit2 className="h-4 w-4" />
+                    </button>
+                    <button
+                      onClick={() => setLogToDelete(log)}
+                      className="p-2 rounded-lg bg-slate-900 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
+                      title="Delete Log"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
 
-      {/* Log Form Modal */}
+      {/* Progress Form Modal */}
       {isFormOpen && (
         <ProgressForm
           initialData={editingLog}
+          weightUnit={weightUnit}
+          lengthUnit={lengthUnit}
+          isSubmitting={isSubmitting}
           onSubmit={handleFormSubmit}
-          onCancel={() => {
+          onClose={() => {
             setIsFormOpen(false);
             setEditingLog(null);
           }}
-          isSubmitting={isSubmitting}
-          weightUnit={weightUnit}
-          lengthUnit={lengthUnit}
         />
       )}
 
       {/* Delete Confirmation Modal */}
       <DeleteConfirmModal
-        isOpen={Boolean(logToDelete)}
-        title="Delete Progress Entry"
-        message={`Are you sure you want to delete the log from ${
-          logToDelete?.date ? new Date(logToDelete.date).toLocaleDateString() : 'this date'
-        }?`}
+        isOpen={!!logToDelete}
+        title="Delete Progress Log"
+        message="Are you sure you want to delete this progress entry? This will remove these data points from your trend charts."
+        isDeleting={isDeleting}
         onConfirm={handleConfirmDelete}
         onCancel={() => setLogToDelete(null)}
-        isDeleting={isDeleting}
       />
     </div>
   );

@@ -1,6 +1,6 @@
 # 🏋️ Fitness Tracker (MERN Stack)
 
-A clean, modular, and secure **MERN Stack** (MongoDB, Express.js, React, Node.js) application with fullstack authentication, workout logging, daily nutrition tracking, progress charts, cross-module search, milestone notifications, CSV/PDF data export, and production security hardening.
+A clean, modular, responsive, and secure **MERN Stack** (MongoDB, Express.js, React, Node.js) application with fullstack authentication, workout logging, daily nutrition tracking, progress charts, cross-module search, milestone notifications, CSV/PDF data export, toast notifications, loading skeletons, and production security hardening.
 
 ---
 
@@ -51,13 +51,13 @@ fitness-tracker/
 │
 ├── frontend/                 # React 19 + Vite + Tailwind CSS Client
 │   ├── src/
-│   │   ├── components/       # Reusable UI (Header, SearchBar, NotificationBell, ExportButton, WorkoutCard, MealSection, TrendsChart, MeasurementCards, ProgressForm, DeleteConfirmModal)
-│   │   ├── context/          # AuthContext (token storage, global auth state & theme sync)
+│   │   ├── components/       # Reusable UI (Header, PageHeader, Skeletons, ErrorBoundary, SearchBar, NotificationBell, ExportButton, WorkoutCard, MealSection, TrendsChart, MeasurementCards, ProgressForm, DeleteConfirmModal)
+│   │   ├── context/          # AuthContext (JWT & theme sync), ToastContext (global notifications)
 │   │   ├── hooks/            # Custom React hooks
-│   │   ├── pages/            # Page views (HomePage, Login, Register, Dashboard, Workouts, Nutrition, Progress, Settings)
+│   │   ├── pages/            # Page views (HomePage, Login, Register, Dashboard, Workouts, Nutrition, Progress, Settings, NotFoundPage)
 │   │   ├── services/
 │   │   │   └── api.js        # Configured Axios instance with auth interceptor
-│   │   ├── App.jsx           # React Router & AuthProvider configuration
+│   │   ├── App.jsx           # React Router, ErrorBoundary & ToastProvider configuration
 │   │   ├── main.jsx          # React DOM root entry
 │   │   └── index.css         # Tailwind CSS styling
 │   ├── .env.example          # Frontend env sample
@@ -148,6 +148,16 @@ fitness-tracker/
    ```bash
    npm run build
    ```
+
+---
+
+## 📱 Responsive UI & Polish Highlights
+
+- **Mobile Navigation (375px+)**: Sleek bottom navigation bar for mobile thumb navigation across Dashboard, Workouts, Nutrition, Progress, and Settings.
+- **Loading Skeletons (`components/Skeletons.jsx`)**: Animated shimmer placeholders for cards, stats, charts, and activity feeds during data fetching.
+- **Global Toast System (`context/ToastContext.jsx`)**: Non-blocking, animated feedback messages (`toast.success()`, `toast.error()`) for all user mutations.
+- **Error Boundary (`components/ErrorBoundary.jsx`)**: React Error Boundary preventing screen crashes with quick reload and home redirection.
+- **Shared Page Header (`components/PageHeader.jsx`)**: Standardized responsive header with title, subtitle, count badges, and action slots.
 
 ---
 

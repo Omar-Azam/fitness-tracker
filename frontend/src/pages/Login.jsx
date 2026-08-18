@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { LogIn, AlertCircle, ArrowRight } from 'lucide-react';
 
 export default function Login() {
@@ -12,6 +13,7 @@ export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { login } = useAuth();
+  const toast = useToast();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -37,28 +39,35 @@ export default function Login() {
     setIsSubmitting(true);
     try {
       await login(formData);
+      toast.success('Welcome back!');
       navigate(from, { replace: true });
     } catch (err) {
-      setErrorMessage(err.message || 'Invalid credentials');
+      const msg = err.message || 'Invalid credentials';
+      setErrorMessage(msg);
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto my-12 px-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-xl">
-        <div className="text-center mb-8">
-          <div className="inline-flex p-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-3">
+    <div className="max-w-md w-full mx-auto my-8 sm:my-12 px-2 sm:px-4">
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-3 shadow-lg shadow-emerald-500/10">
             <LogIn className="h-6 w-6" />
           </div>
-          <h1 className="text-2xl font-bold text-white">Welcome Back</h1>
-          <p className="text-sm text-slate-400 mt-1">Sign in to your fitness dashboard</p>
+          <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+            Welcome Back
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+            Sign in to access your workouts and nutrition logs
+          </p>
         </div>
 
         {errorMessage && (
-          <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-start gap-3 text-rose-300 text-sm">
-            <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
+          <div className="mb-5 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-start gap-2.5 text-rose-300 text-xs sm:text-sm">
+            <AlertCircle className="h-4.5 w-4.5 shrink-0 mt-0.5" />
             <span>{errorMessage}</span>
           </div>
         )}
@@ -74,7 +83,7 @@ export default function Login() {
               value={formData.emailOrUsername}
               onChange={handleChange}
               placeholder="e.g. alex or alex@example.com"
-              className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm transition"
+              className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-xs sm:text-sm transition"
               required
             />
           </div>
@@ -89,7 +98,7 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               placeholder="••••••••"
-              className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 text-sm transition"
+              className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-xs sm:text-sm transition"
               required
             />
           </div>
@@ -97,7 +106,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full mt-2 py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-semibold text-sm transition duration-150 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-emerald-500/20"
+            className="w-full mt-2 py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 shadow-lg shadow-emerald-500/20"
           >
             {isSubmitting ? (
               <>
@@ -115,7 +124,7 @@ export default function Login() {
 
         <div className="mt-6 pt-6 border-t border-slate-800 text-center text-xs text-slate-400">
           Don't have an account?{' '}
-          <Link to="/register" className="text-emerald-400 hover:text-emerald-300 font-semibold">
+          <Link to="/register" className="text-emerald-400 hover:text-emerald-300 font-bold">
             Create an account
           </Link>
         </div>

@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import api from '../services/api';
+import { useToast } from '../context/ToastContext';
 import WorkoutCard from '../components/WorkoutCard';
 import WorkoutForm from '../components/WorkoutForm';
 import DeleteConfirmModal from '../components/DeleteConfirmModal';
 import ExportButton from '../components/ExportButton';
+import PageHeader from '../components/PageHeader';
+import { CardSkeleton } from '../components/Skeletons';
 import {
   Dumbbell,
   Plus,
@@ -19,6 +22,7 @@ import {
 } from 'lucide-react';
 
 export default function Workouts() {
+  const toast = useToast();
   const [workouts, setWorkouts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -72,6 +76,7 @@ export default function Workouts() {
     } catch (err) {
       console.error('Failed to fetch workouts:', err);
       setError(err.message || 'Failed to load workouts');
+      toast.error('Failed to load workouts list');
     } finally {
       setLoading(false);
     }
@@ -99,12 +104,16 @@ export default function Workouts() {
     try {
       if (editingWorkout?._id) {
         await api.put(`/workouts/${editingWorkout._id}`, payload);
+        toast.success('Workout updated successfully! 💪');
       } else {
         await api.post('/workouts', payload);
+        toast.success('New workout logged! 🏋️');
       }
       setIsFormOpen(false);
       setEditingWorkout(null);
       await fetchWorkouts();
+    } catch (err) {
+      toast.error(err.message || 'Failed to save workout');
     } finally {
       setIsSubmitting(false);
     }
@@ -121,10 +130,11 @@ export default function Workouts() {
     setIsDeleting(true);
     try {
       await api.delete(`/workouts/${workoutToDelete._id}`);
+      toast.success('Workout deleted successfully');
       setWorkoutToDelete(null);
       await fetchWorkouts();
     } catch (err) {
-      alert(err.message || 'Failed to delete workout');
+      toast.error(err.message || 'Failed to delete workout');
     } finally {
       setIsDeleting(false);
     }
@@ -143,35 +153,26 @@ export default function Workouts() {
     categoryFilter !== 'all' || tagFilter.trim() !== '' || fromDate !== '' || toDate !== '';
 
   return (
-    <div className="max-w-6xl mx-auto py-8 space-y-6 px-4">
+    <div className="max-w-6xl mx-auto py-6 sm:py-8 space-y-6 px-2 sm:px-4">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Workout Log
-            </h1>
-            <span className="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              {totalWorkouts} {totalWorkouts === 1 ? 'session' : 'sessions'}
-            </span>
-          </div>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Track and analyze your training routines and exercises
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2.5 shrink-0">
-          <ExportButton endpoint="/export/workouts" resourceName="workouts" />
-
-          <button
-            onClick={handleOpenCreate}
-            className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-bold text-xs sm:text-sm transition duration-150 cursor-pointer shadow-lg shadow-emerald-500/20"
-          >
-            <Plus className="h-4 w-4" />
-            <span>New Workout</span>
-          </button>
-        </div>
-      </div>
+      <PageHeader
+        title="Workout Log"
+        subtitle="Track and analyze your training routines and exercises"
+        count={totalWorkouts}
+        countLabel="sessions"
+        actions={
+          <>
+            <ExportButton endpoint="/export/workouts" resourceName="workouts" />
+            <button
+              onClick={handleOpenCreate}
+              className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-bold text-xs sm:text-sm transition duration-150 cursor-pointer shadow-lg shadow-emerald-500/20"
+            >
+              <Plus className="h-4 w-4" />
+              <span>New Workout</span>
+            </button>
+          </>
+        }
+      />
 
       {/* Filter Toolbar */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-xl space-y-4">
@@ -184,9 +185,10 @@ export default function Workouts() {
           {hasActiveFilters && (
             <button
               onClick={handleClearFilters}
-              className="text-xs text-emerald-400 hover:text-emerald-300 font-semibold cursor-pointer"
+              className="inline-flex items-center gap-1 text-xs text-rose-400 hover:text-rose-300 font-semibold cursor-pointer transition"
             >
-              Reset Filters
+              <XCircle className="h-3.5 w-3.5" />
+              <span>Reset Filters</span>
             </button>
           )}
         </div>
@@ -194,7 +196,7 @@ export default function Workouts() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {/* Category Filter */}
           <div>
-            <label className="block text-[10px] uppercase font-semibold text-slate-400 mb-1">
+            <label className="block text-[11px] font-semibold text-slate-400 mb-1">
               Category
             </label>
             <select
@@ -203,39 +205,39 @@ export default function Workouts() {
                 setCategoryFilter(e.target.value);
                 setPage(1);
               }}
-              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs focus:outline-none focus:border-emerald-500"
+              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-emerald-500 transition"
             >
               <option value="all">All Categories</option>
-              <option value="strength">Strength Training</option>
-              <option value="cardio">Cardio & Running</option>
-              <option value="flexibility">Flexibility & Yoga</option>
-              <option value="other">Other / Mixed</option>
+              <option value="strength">Strength</option>
+              <option value="cardio">Cardio</option>
+              <option value="flexibility">Flexibility</option>
+              <option value="other">Other</option>
             </select>
           </div>
 
           {/* Tag Filter */}
           <div>
-            <label className="block text-[10px] uppercase font-semibold text-slate-400 mb-1">
-              Search by Tag
+            <label className="block text-[11px] font-semibold text-slate-400 mb-1">
+              Tag Search
             </label>
             <div className="relative">
               <input
                 type="text"
-                placeholder="e.g. legs, chest, 5k..."
+                placeholder="e.g. chest, legday"
                 value={tagFilter}
                 onChange={(e) => {
                   setTagFilter(e.target.value);
                   setPage(1);
                 }}
-                className="w-full pl-8 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                className="w-full pl-8 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition"
               />
-              <Search className="h-3.5 w-3.5 text-slate-500 absolute left-2.5 top-2.5" />
+              <Search className="h-3.5 w-3.5 text-slate-500 absolute left-2.5 top-3" />
             </div>
           </div>
 
           {/* From Date */}
           <div>
-            <label className="block text-[10px] uppercase font-semibold text-slate-400 mb-1">
+            <label className="block text-[11px] font-semibold text-slate-400 mb-1">
               From Date
             </label>
             <input
@@ -245,13 +247,13 @@ export default function Workouts() {
                 setFromDate(e.target.value);
                 setPage(1);
               }}
-              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs focus:outline-none focus:border-emerald-500"
+              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-emerald-500 transition font-mono"
             />
           </div>
 
           {/* To Date */}
           <div>
-            <label className="block text-[10px] uppercase font-semibold text-slate-400 mb-1">
+            <label className="block text-[11px] font-semibold text-slate-400 mb-1">
               To Date
             </label>
             <input
@@ -261,7 +263,7 @@ export default function Workouts() {
                 setToDate(e.target.value);
                 setPage(1);
               }}
-              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-white text-xs focus:outline-none focus:border-emerald-500"
+              className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-200 focus:outline-none focus:border-emerald-500 transition font-mono"
             />
           </div>
         </div>
@@ -269,53 +271,52 @@ export default function Workouts() {
 
       {/* Main Content Area */}
       {loading ? (
-        <div className="flex flex-col items-center justify-center py-16 space-y-3">
-          <div className="w-8 h-8 border-3 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-slate-400">Loading workouts...</p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          <CardSkeleton />
+          <CardSkeleton />
+          <CardSkeleton />
+          <CardSkeleton />
+          <CardSkeleton />
+          <CardSkeleton />
         </div>
       ) : error ? (
-        <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-center space-y-3">
-          <XCircle className="h-8 w-8 mx-auto" />
-          <p className="text-sm font-semibold">{error}</p>
+        <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-center space-y-3">
+          <p className="text-sm font-semibold text-rose-300">{error}</p>
           <button
             onClick={fetchWorkouts}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-semibold text-white hover:bg-slate-800 cursor-pointer"
+            className="px-4 py-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 transition"
           >
             <RefreshCw className="h-3.5 w-3.5" />
             Try Again
           </button>
         </div>
       ) : workouts.length === 0 ? (
-        /* Empty State */
-        <div className="bg-slate-900/60 border border-dashed border-slate-800 rounded-2xl p-12 text-center space-y-4">
-          <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center mx-auto">
+        <div className="bg-slate-900/60 border border-dashed border-slate-800 rounded-3xl p-8 sm:p-12 text-center space-y-4">
+          <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mx-auto">
             <Dumbbell className="h-8 w-8" />
           </div>
-          <div>
-            <h3 className="text-lg font-bold text-white">
-              {hasActiveFilters
-                ? 'No workouts match your filters'
-                : 'No workouts yet — log your first one'}
+          <div className="space-y-1">
+            <h3 className="text-base sm:text-lg font-bold text-white">
+              {hasActiveFilters ? 'No workouts match your filters' : 'No workouts yet — log your first one'}
             </h3>
-            <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto mt-1">
+            <p className="text-xs sm:text-sm text-slate-400 max-w-sm mx-auto">
               {hasActiveFilters
-                ? 'Try adjusting your category, tag, or date range filters to view matching workouts.'
-                : 'Start tracking your daily exercise routines, sets, reps, and performance metrics.'}
+                ? 'Try adjusting your category, tag, or date range filters to see your sessions.'
+                : 'Start tracking your strength, cardio, and flexibility progress today.'}
             </p>
           </div>
-
-          <div className="pt-2">
+          <div>
             {hasActiveFilters ? (
               <button
                 onClick={handleClearFilters}
-                className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs font-semibold cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 text-xs sm:text-sm font-semibold transition"
               >
                 Clear Filters
               </button>
             ) : (
               <button
                 onClick={handleOpenCreate}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-bold text-xs transition cursor-pointer shadow-lg shadow-emerald-500/20"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-bold text-xs sm:text-sm shadow-lg shadow-emerald-500/20 transition cursor-pointer"
               >
                 <Plus className="h-4 w-4" />
                 Log Your First Workout
@@ -324,9 +325,9 @@ export default function Workouts() {
           </div>
         </div>
       ) : (
-        /* Workout Cards Grid */
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <>
+          {/* Workouts Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {workouts.map((workout) => (
               <WorkoutCard
                 key={workout._id}
@@ -339,57 +340,57 @@ export default function Workouts() {
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between border-t border-slate-800 pt-4 px-2">
+            <div className="flex items-center justify-between pt-4 border-t border-slate-800">
               <span className="text-xs text-slate-400">
-                Showing Page <span className="font-mono text-white">{page}</span> of{' '}
-                <span className="font-mono text-white">{totalPages}</span> ({totalWorkouts} total)
+                Page <span className="font-mono text-slate-200">{page}</span> of{' '}
+                <span className="font-mono text-slate-200">{totalPages}</span>
               </span>
 
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page <= 1}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 hover:text-white hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-slate-900 transition cursor-pointer"
                 >
-                  <ChevronLeft className="h-3.5 w-3.5" />
-                  Previous
+                  <ChevronLeft className="h-4 w-4" />
+                  <span>Previous</span>
                 </button>
 
                 <button
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page >= totalPages}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-semibold text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 hover:text-white hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-slate-900 transition cursor-pointer"
                 >
-                  Next
-                  <ChevronRight className="h-3.5 w-3.5" />
+                  <span>Next</span>
+                  <ChevronRight className="h-4 w-4" />
                 </button>
               </div>
             </div>
           )}
-        </div>
+        </>
       )}
 
-      {/* Workout Form Modal (Create / Edit) */}
+      {/* Workout Form Modal */}
       {isFormOpen && (
         <WorkoutForm
-          initialData={editingWorkout}
+          workout={editingWorkout}
+          isSubmitting={isSubmitting}
           onSubmit={handleFormSubmit}
-          onCancel={() => {
+          onClose={() => {
             setIsFormOpen(false);
             setEditingWorkout(null);
           }}
-          isSubmitting={isSubmitting}
         />
       )}
 
-      {/* Delete Confirmation Dialog */}
+      {/* Delete Confirmation Modal */}
       <DeleteConfirmModal
-        isOpen={Boolean(workoutToDelete)}
-        title="Delete Workout Session"
-        message={`Are you sure you want to delete "${workoutToDelete?.name}"? All recorded exercises and sets in this workout will be removed.`}
+        isOpen={!!workoutToDelete}
+        title="Delete Workout"
+        message={`Are you sure you want to delete "${workoutToDelete?.name}"? This action cannot be undone.`}
+        isDeleting={isDeleting}
         onConfirm={handleConfirmDelete}
         onCancel={() => setWorkoutToDelete(null)}
-        isDeleting={isDeleting}
       />
     </div>
   );
