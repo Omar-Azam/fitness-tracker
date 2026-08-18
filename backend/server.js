@@ -1,6 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
 import connectDB from './config/db.js';
 import healthRoutes from './routes/healthRoutes.js';
 import authRoutes from './routes/authRoutes.js';
@@ -23,6 +25,14 @@ if (process.env.MONGO_URI) {
 }
 
 const app = express();
+
+// Security HTTP Headers
+app.use(helmet());
+
+// Development Request Logger
+if (process.env.NODE_ENV !== 'production') {
+  app.use(morgan('dev'));
+}
 
 // Middleware
 const frontendOrigin = process.env.FRONTEND_URL || 'http://localhost:5173';

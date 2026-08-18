@@ -11,12 +11,13 @@ import {
   validateLogin,
   validateUpdateProfile,
 } from '../middleware/validator.js';
+import { authLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
-// Public auth routes
-router.post('/register', validateRegister, register);
-router.post('/login', validateLogin, login);
+// Public auth routes with rate limiting
+router.post('/register', authLimiter, validateRegister, register);
+router.post('/login', authLimiter, validateLogin, login);
 
 // Protected user routes
 router.get('/me', protect, getMe);

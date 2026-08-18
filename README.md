@@ -1,6 +1,6 @@
 # 🏋️ Fitness Tracker (MERN Stack)
 
-A clean, modular **MERN Stack** (MongoDB, Express.js, React, Node.js) application with fullstack authentication, workout logging, daily nutrition tracking, progress charts, cross-module search, milestone notifications, and CSV/PDF data export.
+A clean, modular, and secure **MERN Stack** (MongoDB, Express.js, React, Node.js) application with fullstack authentication, workout logging, daily nutrition tracking, progress charts, cross-module search, milestone notifications, CSV/PDF data export, and production security hardening.
 
 ---
 
@@ -22,20 +22,21 @@ fitness-tracker/
 │   │   └── workoutController.js# Workout CRUD, filters & goal notification trigger
 │   ├── middleware/
 │   │   ├── auth.js           # JWT Bearer authentication middleware
-│   │   ├── errorMiddleware.js# Central error and 404 handler
+│   │   ├── errorMiddleware.js# Central error handler with production stack trace shielding
 │   │   ├── nutritionValidator.js# Nutrition validation middleware
 │   │   ├── progressValidator.js # Progress validation middleware
+│   │   ├── rateLimiter.js    # Rate limiting middleware for auth endpoints
 │   │   ├── validator.js      # Auth validation middleware
 │   │   └── workoutValidator.js# Workout validation middleware
 │   ├── models/               # Mongoose schema definitions
-│   │   ├── User.js           # User model with bcrypt & validation
+│   │   ├── User.js           # User model with bcrypt & toJSON password shielding
 │   │   ├── Workout.js        # Workout model with exercise subdocuments
 │   │   ├── NutritionEntry.js # Nutrition logging model with food items
 │   │   ├── ProgressLog.js    # Progress & metrics model with measurements
 │   │   ├── Notification.js   # Notification model
 │   │   └── index.js          # Barrel exports
 │   ├── routes/               # Express API routes
-│   │   ├── authRoutes.js     # /api/auth endpoints
+│   │   ├── authRoutes.js     # /api/auth endpoints (rate limited)
 │   │   ├── exportRoutes.js   # /api/export endpoints (CSV / PDF)
 │   │   ├── healthRoutes.js   # /api/health endpoint
 │   │   ├── notificationRoutes.js# /api/notifications endpoints
@@ -46,7 +47,7 @@ fitness-tracker/
 │   ├── .env.example          # Sample environment variables
 │   ├── .env                  # Local environment file (git-ignored)
 │   ├── package.json
-│   └── server.js             # API entrypoint
+│   └── server.js             # API entrypoint with Helmet, Morgan, and CORS
 │
 ├── frontend/                 # React 19 + Vite + Tailwind CSS Client
 │   ├── src/
@@ -154,12 +155,14 @@ fitness-tracker/
 
 ### 🔐 Authentication (`/api/auth`)
 
-| Method | Endpoint | Description | Auth Required |
-|---|---|---|---|
-| `POST` | `/api/auth/register` | Register new user with username, email, password | No |
-| `POST` | `/api/auth/login` | Login with email/username and password | No |
-| `GET` | `/api/auth/me` | Get logged-in user profile (no password field) | Yes (Bearer Token) |
-| `PUT` | `/api/auth/profile` | Update profile (`name`, `profilePicture`, `preferences`) | Yes (Bearer Token) |
+*Rate-limited to 15 requests per 15-minute window via `express-rate-limit`.*
+
+| Method | Endpoint | Description | Rate Limited | Auth Required |
+|---|---|---|---|---|
+| `POST` | `/api/auth/register` | Register new user with username, email, password | Yes (15 / 15m) | No |
+| `POST` | `/api/auth/login` | Login with email/username and password | Yes (15 / 15m) | No |
+| `GET` | `/api/auth/me` | Get logged-in user profile (no password field) | No | Yes (Bearer Token) |
+| `PUT` | `/api/auth/profile` | Update profile (`name`, `profilePicture`, `preferences`) | No | Yes (Bearer Token) |
 
 ### 🏋️ Workouts (`/api/workouts`)
 
@@ -220,7 +223,21 @@ fitness-tracker/
 
 ---
 
-## 🛡️ Error Handling & CORS
+## 🛡️ Security & Reliability Architecture
 
-- **Central Error Handling**: All route errors and unhandled exceptions return structured JSON `{ error: "message" }`.
-- **CORS**: Configured in `server.js` using `FRONTEND_URL` to allow seamless local development and cross-origin requests from the React client.
+1. **HTTP Security Headers (`helmet`)**:
+   - Automatic protection against MIME-sniffing (`X-Content-Type-Options: nosniff`), clickjacking (`X-Frame-Options: SAMEORIGIN`), XSS, and HSTS headers.
+2. **Brute Force Protection (`express-rate-limit`)**:
+   - `/api/auth/login` and `/api/auth/register` endpoints are limited to 15 requests per 15 minutes per IP address with `429 Too Many Requests` responses.
+3. **Password Shielding (Defense in Depth)**:
+   - Passwords hashed with bcrypt (salt cost 10).
+   - Mongoose schema `toJSON` & `toObject` transform automatically deletes `password` and `__v` upon serialization.
+   - Controllers and auth middleware use `.select('-password')` and manual `sanitizeUser` stripping.
+4. **Tenant Isolation (`req.user._id`)**:
+   - Every single query, mutation, and deletion in workouts, nutrition, progress, search, notifications, and export requires a matching `user: req.user._id`.
+5. **Input Validation & Sanitization**:
+   - All write endpoints run through dedicated request validator middlewares before controller execution.
+6. **Central Error Handler**:
+   - In production (`NODE_ENV=production`), logs real errors with full stack traces server-side while masking 500 error details and suppressing stack traces to clients.
+7. **Development Logging (`morgan`)**:
+   - Formatted HTTP request logs in development mode.
