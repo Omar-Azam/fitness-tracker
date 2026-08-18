@@ -1,6 +1,6 @@
 # 🏋️ Fitness Tracker (MERN Stack)
 
-A clean, modular **MERN Stack** (MongoDB, Express.js, React, Node.js) application with fullstack authentication, workout logging, and daily nutrition tracking.
+A clean, modular **MERN Stack** (MongoDB, Express.js, React, Node.js) application with fullstack authentication, workout logging, daily nutrition tracking, and progress charts.
 
 ---
 
@@ -15,24 +15,27 @@ fitness-tracker/
 │   │   ├── authController.js # Register, Login, Me, Profile controllers
 │   │   ├── healthController.js # Route controller logic
 │   │   ├── nutritionController.js# Nutrition CRUD & daily summary aggregation
+│   │   ├── progressController.js # Progress CRUD, time series trends & dashboard aggregation
 │   │   └── workoutController.js# Workout CRUD, filters & pagination
 │   ├── middleware/
 │   │   ├── auth.js           # JWT Bearer authentication middleware
 │   │   ├── errorMiddleware.js# Central error and 404 handler
 │   │   ├── nutritionValidator.js# Nutrition validation middleware
+│   │   ├── progressValidator.js # Progress validation middleware
 │   │   ├── validator.js      # Auth validation middleware
 │   │   └── workoutValidator.js# Workout validation middleware
 │   ├── models/               # Mongoose schema definitions
 │   │   ├── User.js           # User model with bcrypt & validation
 │   │   ├── Workout.js        # Workout model with exercise subdocuments
 │   │   ├── NutritionEntry.js # Nutrition logging model with food items
-│   │   ├── ProgressLog.js    # Progress & metrics model
+│   │   ├── ProgressLog.js    # Progress & metrics model with measurements
 │   │   ├── Notification.js   # Notification model
 │   │   └── index.js          # Barrel exports
 │   ├── routes/               # Express API routes
 │   │   ├── authRoutes.js     # /api/auth endpoints
 │   │   ├── healthRoutes.js   # /api/health endpoint
 │   │   ├── nutritionRoutes.js# /api/nutrition endpoints
+│   │   ├── progressRoutes.js # /api/progress endpoints
 │   │   └── workoutRoutes.js  # /api/workouts endpoints
 │   ├── .env.example          # Sample environment variables
 │   ├── .env                  # Local environment file (git-ignored)
@@ -41,10 +44,10 @@ fitness-tracker/
 │
 ├── frontend/                 # React 19 + Vite + Tailwind CSS Client
 │   ├── src/
-│   │   ├── components/       # Reusable UI (Header, WorkoutCard, WorkoutForm, MealSection, NutritionEntryForm, DeleteConfirmModal)
+│   │   ├── components/       # Reusable UI (Header, WorkoutCard, MealSection, TrendsChart, MeasurementCards, ProgressForm, DeleteConfirmModal)
 │   │   ├── context/          # AuthContext (token storage & global auth state)
 │   │   ├── hooks/            # Custom React hooks
-│   │   ├── pages/            # Page views (HomePage, Login, Register, Dashboard, Workouts, Nutrition)
+│   │   ├── pages/            # Page views (HomePage, Login, Register, Dashboard, Workouts, Nutrition, Progress)
 │   │   ├── services/
 │   │   │   └── api.js        # Configured Axios instance with auth interceptor
 │   │   ├── App.jsx           # React Router & AuthProvider configuration
@@ -175,6 +178,19 @@ fitness-tracker/
 | `POST` | `/api/nutrition` | Create a nutrition entry | — | Yes (Bearer Token) |
 | `PUT` | `/api/nutrition/:id` | Update nutrition entry | — | Yes (Bearer Token) |
 | `DELETE` | `/api/nutrition/:id` | Delete nutrition entry | — | Yes (Bearer Token) |
+
+### 📈 Progress & Trends (`/api/progress`)
+
+*All progress endpoints are user-scoped with strict isolation.*
+
+| Method | Endpoint | Description | Query Parameters | Auth Required |
+|---|---|---|---|---|
+| `GET` | `/api/progress` | List user's progress logs | `from`, `to` | Yes (Bearer Token) |
+| `GET` | `/api/progress/trends` | Time series for charts | `metric=weight` or custom metric name, `from`, `to` | Yes (Bearer Token) |
+| `GET` | `/api/progress/dashboard-summary` | Aggregated weekly stats, weight sparkline & recent activity | — | Yes (Bearer Token) |
+| `POST` | `/api/progress` | Create a progress log | — | Yes (Bearer Token) |
+| `PUT` | `/api/progress/:id` | Update progress log | — | Yes (Bearer Token) |
+| `DELETE` | `/api/progress/:id` | Delete progress log | — | Yes (Bearer Token) |
 
 ---
 

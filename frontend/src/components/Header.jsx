@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dumbbell, LogIn, UserPlus, LogOut, LayoutDashboard, User } from 'lucide-react';
+import { Dumbbell, LogIn, UserPlus, LogOut, LayoutDashboard, User, Apple, TrendingUp } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -47,6 +47,14 @@ export default function Header() {
               >
                 <Apple className="h-4 w-4 text-emerald-400" />
                 <span className="hidden sm:inline">Nutrition</span>
+              </Link>
+
+              <Link
+                to="/progress"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-medium transition"
+              >
+                <TrendingUp className="h-4 w-4 text-emerald-400" />
+                <span className="hidden sm:inline">Progress</span>
               </Link>
 
               <Link
