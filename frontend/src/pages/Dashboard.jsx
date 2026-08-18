@@ -77,6 +77,26 @@ export default function Dashboard() {
         </div>
       </div>
 
+      {/* Quick Actions */}
+      <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 border border-emerald-500/20 rounded-2xl p-5 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-3 rounded-xl bg-emerald-500/20 text-emerald-400">
+            <User className="h-6 w-6" />
+          </div>
+          <div>
+            <h3 className="font-bold text-white text-sm sm:text-base">Ready for your workout?</h3>
+            <p className="text-xs text-slate-400">Log your sets, reps, and track exercise progress.</p>
+          </div>
+        </div>
+
+        <a
+          href="/workouts"
+          className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-bold text-xs transition shrink-0 shadow-md shadow-emerald-500/20"
+        >
+          View Workouts
+        </a>
+      </div>
+
       {/* Profile & Preferences Form */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-xl">
         <div className="flex items-center gap-3 pb-6 border-b border-slate-800 mb-6">
