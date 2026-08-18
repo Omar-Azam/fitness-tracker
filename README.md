@@ -1,6 +1,6 @@
 # 🏋️ Fitness Tracker (MERN Stack)
 
-A clean, modular **MERN Stack** (MongoDB, Express.js, React, Node.js) application skeleton for building a modern fitness tracker.
+A clean, modular **MERN Stack** (MongoDB, Express.js, React, Node.js) application skeleton with fullstack authentication for building a modern fitness tracker.
 
 ---
 
@@ -12,13 +12,22 @@ fitness-tracker/
 │   ├── config/
 │   │   └── db.js             # Mongoose connection logic
 │   ├── controllers/
+│   │   ├── authController.js # Register, Login, Me, Profile controllers
 │   │   └── healthController.js # Route controller logic
 │   ├── middleware/
-│   │   └── errorMiddleware.js  # Central error and 404 handler
+│   │   ├── auth.js           # JWT Bearer authentication middleware
+│   │   ├── errorMiddleware.js# Central error and 404 handler
+│   │   └── validator.js      # Request validation middleware
 │   ├── models/               # Mongoose schema definitions
-│   │   └── .gitkeep
+│   │   ├── User.js           # User model with bcrypt & validation
+│   │   ├── Workout.js        # Workout model
+│   │   ├── NutritionEntry.js # Nutrition logging model
+│   │   ├── ProgressLog.js    # Progress & metrics model
+│   │   ├── Notification.js   # Notification model
+│   │   └── index.js          # Barrel exports
 │   ├── routes/               # Express API routes
-│   │   └── healthRoutes.js
+│   │   ├── authRoutes.js     # /api/auth endpoints
+│   │   └── healthRoutes.js   # /api/health endpoint
 │   ├── .env.example          # Sample environment variables
 │   ├── .env                  # Local environment file (git-ignored)
 │   ├── package.json
@@ -26,13 +35,13 @@ fitness-tracker/
 │
 ├── frontend/                 # React 19 + Vite + Tailwind CSS Client
 │   ├── src/
-│   │   ├── components/       # Reusable UI components (Header, StatusCard, etc.)
-│   │   ├── context/          # React Context providers
+│   │   ├── components/       # Reusable UI (Header, StatusCard, ProtectedRoute)
+│   │   ├── context/          # AuthContext (token storage & global auth state)
 │   │   ├── hooks/            # Custom React hooks
-│   │   ├── pages/            # Page views (HomePage, NotFoundPage, etc.)
+│   │   ├── pages/            # Page views (HomePage, Login, Register, Dashboard)
 │   │   ├── services/
-│   │   │   └── api.js        # Configured Axios instance with baseURL
-│   │   ├── App.jsx           # React Router configuration
+│   │   │   └── api.js        # Configured Axios instance with auth interceptor
+│   │   ├── App.jsx           # React Router & AuthProvider configuration
 │   │   ├── main.jsx          # React DOM root entry
 │   │   └── index.css         # Tailwind CSS styling
 │   ├── .env.example          # Frontend env sample
@@ -88,20 +97,6 @@ fitness-tracker/
    ```
    *The API will start at `http://localhost:5000` with hot-reloading via Nodemon.*
 
-5. **Verify health endpoint**:
-   ```bash
-   curl http://localhost:5000/api/health
-   ```
-   *Expected response:*
-   ```json
-   {
-     "status": "ok",
-     "message": "Fitness Tracker API is operational",
-     "timestamp": "2026-08-18T...",
-     "uptime": 12.34
-   }
-   ```
-
 ---
 
 ## 💻 Frontend Setup
@@ -140,14 +135,19 @@ fitness-tracker/
 
 ---
 
-## 🔌 API Verification & Integration
+## 🔐 Authentication API
 
-- **Backend Health Check**: `GET /api/health`
-- **Frontend Live Check**: Open `http://localhost:5173` in your browser. The homepage automatically queries `/api/health` via the configured Axios service and displays a real-time status badge with uptime and timestamp information.
+| Method | Endpoint | Description | Auth Required |
+|---|---|---|---|
+| `POST` | `/api/auth/register` | Register new user with username, email, password | No |
+| `POST` | `/api/auth/login` | Login with email/username and password | No |
+| `GET` | `/api/auth/me` | Get logged-in user profile (no password field) | Yes (Bearer Token) |
+| `PUT` | `/api/auth/profile` | Update profile (`name`, `profilePicture`, `preferences`) | Yes (Bearer Token) |
+| `GET` | `/api/health` | API health check endpoint | No |
 
 ---
 
 ## 🛡️ Error Handling & CORS
 
-- **Central Error Handling**: All route errors and unhandled exceptions are caught by `middleware/errorMiddleware.js`, formatting errors as structured JSON responses.
+- **Central Error Handling**: All route errors and unhandled exceptions return structured JSON `{ error: "message" }`.
 - **CORS**: Configured in `server.js` using `FRONTEND_URL` to allow seamless local development and cross-origin requests from the React client.

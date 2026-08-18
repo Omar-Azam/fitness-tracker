@@ -3,7 +3,11 @@ import api from '../services/api';
 import StatusCard from '../components/StatusCard';
 import { Database, Layers, Flame, Code2, Zap, ArrowUpRight } from 'lucide-react';
 
+import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
+
 export default function HomePage() {
+  const { user, isAuthenticated } = useAuth();
   const [statusData, setStatusData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,6 +47,34 @@ export default function HomePage() {
         <p className="text-slate-400 text-base sm:text-lg max-w-xl mx-auto">
           Clean, modular fullstack skeleton powered by Node.js, Express, MongoDB (Mongoose), and React with Vite & Tailwind CSS.
         </p>
+
+        <div className="pt-2 flex items-center justify-center gap-3">
+          {isAuthenticated ? (
+            <Link
+              to="/dashboard"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-semibold text-sm transition shadow-lg shadow-emerald-500/20"
+            >
+              Go to Dashboard (@{user?.username})
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 font-semibold text-sm transition"
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/register"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-450 text-slate-950 font-semibold text-sm transition shadow-lg shadow-emerald-500/20"
+              >
+                Get Started
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
+            </>
+          )}
+        </div>
       </section>
 
       {/* Live Health Check Connection Section */}

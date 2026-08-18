@@ -10,15 +10,34 @@ const api = axios.create({
   },
 });
 
-// Response interceptor for consistent error handling
+// Request interceptor: Attach JWT Bearer token to every request if present
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('fitness_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor: Standardize error formatting
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    const errorMessage =
+      error.response?.data?.error ||
+      error.response?.data?.message ||
+      error.message ||
+      'An unexpected network error occurred';
+
     const customError = {
-      message: error.response?.data?.message || error.message || 'An unexpected error occurred',
+      message: errorMessage,
       status: error.response?.status || 500,
       data: error.response?.data || null,
     };
+
     return Promise.reject(customError);
   }
 );
