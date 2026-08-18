@@ -1,6 +1,6 @@
 # 🏋️ Fitness Tracker (MERN Stack)
 
-A clean, modular **MERN Stack** (MongoDB, Express.js, React, Node.js) application with fullstack authentication, workout logging, daily nutrition tracking, and progress charts.
+A clean, modular **MERN Stack** (MongoDB, Express.js, React, Node.js) application with fullstack authentication, workout logging, daily nutrition tracking, progress charts, cross-module search, and milestone notifications.
 
 ---
 
@@ -14,9 +14,11 @@ fitness-tracker/
 │   ├── controllers/
 │   │   ├── authController.js # Register, Login, Me, Profile controllers
 │   │   ├── healthController.js # Route controller logic
+│   │   ├── notificationController.js# Notifications list & mark-as-read
 │   │   ├── nutritionController.js# Nutrition CRUD & daily summary aggregation
 │   │   ├── progressController.js # Progress CRUD, time series trends & dashboard aggregation
-│   │   └── workoutController.js# Workout CRUD, filters & pagination
+│   │   ├── searchController.js   # Global search across workouts and nutrition
+│   │   └── workoutController.js# Workout CRUD, filters & goal notification trigger
 │   ├── middleware/
 │   │   ├── auth.js           # JWT Bearer authentication middleware
 │   │   ├── errorMiddleware.js# Central error and 404 handler
@@ -34,8 +36,10 @@ fitness-tracker/
 │   ├── routes/               # Express API routes
 │   │   ├── authRoutes.js     # /api/auth endpoints
 │   │   ├── healthRoutes.js   # /api/health endpoint
+│   │   ├── notificationRoutes.js# /api/notifications endpoints
 │   │   ├── nutritionRoutes.js# /api/nutrition endpoints
 │   │   ├── progressRoutes.js # /api/progress endpoints
+│   │   ├── searchRoutes.js   # /api/search endpoints
 │   │   └── workoutRoutes.js  # /api/workouts endpoints
 │   ├── .env.example          # Sample environment variables
 │   ├── .env                  # Local environment file (git-ignored)
@@ -44,10 +48,10 @@ fitness-tracker/
 │
 ├── frontend/                 # React 19 + Vite + Tailwind CSS Client
 │   ├── src/
-│   │   ├── components/       # Reusable UI (Header, WorkoutCard, MealSection, TrendsChart, MeasurementCards, ProgressForm, DeleteConfirmModal)
-│   │   ├── context/          # AuthContext (token storage & global auth state)
+│   │   ├── components/       # Reusable UI (Header, SearchBar, NotificationBell, WorkoutCard, MealSection, TrendsChart, MeasurementCards, ProgressForm, DeleteConfirmModal)
+│   │   ├── context/          # AuthContext (token storage, global auth state & theme sync)
 │   │   ├── hooks/            # Custom React hooks
-│   │   ├── pages/            # Page views (HomePage, Login, Register, Dashboard, Workouts, Nutrition, Progress)
+│   │   ├── pages/            # Page views (HomePage, Login, Register, Dashboard, Workouts, Nutrition, Progress, Settings)
 │   │   ├── services/
 │   │   │   └── api.js        # Configured Axios instance with auth interceptor
 │   │   ├── App.jsx           # React Router & AuthProvider configuration
@@ -157,7 +161,7 @@ fitness-tracker/
 
 ### 🏋️ Workouts (`/api/workouts`)
 
-*All workout endpoints are user-scoped with strict isolation.*
+*All workout endpoints are user-scoped with strict isolation. Automatically creates milestone notifications upon completing 3+ workouts in a week.*
 
 | Method | Endpoint | Description | Query Parameters | Auth Required |
 |---|---|---|---|---|
@@ -191,6 +195,19 @@ fitness-tracker/
 | `POST` | `/api/progress` | Create a progress log | — | Yes (Bearer Token) |
 | `PUT` | `/api/progress/:id` | Update progress log | — | Yes (Bearer Token) |
 | `DELETE` | `/api/progress/:id` | Delete progress log | — | Yes (Bearer Token) |
+
+### 🔍 Unified Search (`/api/search`)
+
+| Method | Endpoint | Description | Query Parameters | Auth Required |
+|---|---|---|---|---|
+| `GET` | `/api/search` | Search across workouts & meals | `q=[query]`, `type=workout\|nutrition\|all` | Yes (Bearer Token) |
+
+### 🔔 Notifications (`/api/notifications`)
+
+| Method | Endpoint | Description | Auth Required |
+|---|---|---|---|
+| `GET` | `/api/notifications` | List user's notifications and unread count | Yes (Bearer Token) |
+| `PUT` | `/api/notifications/:id/read` | Mark a notification as read | Yes (Bearer Token) |
 
 ---
 

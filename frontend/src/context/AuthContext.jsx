@@ -11,6 +11,18 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Sync theme with user preferences or default to dark
+  useEffect(() => {
+    const theme = user?.preferences?.theme || localStorage.getItem('fitness_theme') || 'dark';
+    if (theme === 'light') {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
+    }
+  }, [user?.preferences?.theme]);
+
   // Fetch current user details on load if token exists
   const checkAuth = useCallback(async () => {
     const storedToken = localStorage.getItem(TOKEN_STORAGE_KEY);

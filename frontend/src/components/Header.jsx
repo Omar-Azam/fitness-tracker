@@ -1,7 +1,19 @@
 import React from 'react';
-import { Dumbbell, LogIn, UserPlus, LogOut, LayoutDashboard, User, Apple, TrendingUp } from 'lucide-react';
+import {
+  Dumbbell,
+  LogIn,
+  UserPlus,
+  LogOut,
+  LayoutDashboard,
+  User,
+  Apple,
+  TrendingUp,
+  Settings as SettingsIcon,
+} from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import SearchBar from './SearchBar';
+import NotificationBell from './NotificationBell';
 
 export default function Header() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -14,72 +26,85 @@ export default function Header() {
 
   return (
     <header className="border-b border-slate-800 bg-slate-900/70 backdrop-blur-md sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 group">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-200">
-            <Dumbbell className="h-5 w-5 text-slate-950 font-bold" />
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+        {/* Brand Logo */}
+        <Link to="/" className="flex items-center gap-2.5 group shrink-0">
+          <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform duration-200">
+            <Dumbbell className="h-4.5 w-4.5 text-slate-950 font-bold" />
           </div>
           <div>
-            <span className="font-bold text-lg text-white tracking-tight flex items-center gap-1.5">
+            <span className="font-bold text-base sm:text-lg text-white tracking-tight flex items-center gap-1.5">
               Fitness Tracker
-              <span className="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                MERN
-              </span>
             </span>
-            <p className="text-xs text-slate-400 hidden sm:block">Fullstack Skeleton</p>
           </div>
         </Link>
 
-        <div className="flex items-center gap-3 sm:gap-4">
+        {/* Global Search Bar (Visible for authenticated users) */}
+        {isAuthenticated && (
+          <div className="hidden md:flex flex-1 justify-center max-w-sm mx-2">
+            <SearchBar />
+          </div>
+        )}
+
+        {/* Navigation & Controls */}
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {isAuthenticated ? (
             <>
+              {/* Mobile Search Bar Toggle / Small Screen */}
+              <div className="md:hidden">
+                <SearchBar />
+              </div>
+
               <Link
                 to="/workouts"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-medium transition"
+                className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-medium transition"
               >
-                <Dumbbell className="h-4 w-4 text-emerald-400" />
-                <span className="hidden sm:inline">Workouts</span>
+                <Dumbbell className="h-3.5 w-3.5 text-emerald-400" />
+                <span>Workouts</span>
               </Link>
 
               <Link
                 to="/nutrition"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-medium transition"
+                className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-medium transition"
               >
-                <Apple className="h-4 w-4 text-emerald-400" />
-                <span className="hidden sm:inline">Nutrition</span>
+                <Apple className="h-3.5 w-3.5 text-emerald-400" />
+                <span>Nutrition</span>
               </Link>
 
               <Link
                 to="/progress"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-medium transition"
+                className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-medium transition"
               >
-                <TrendingUp className="h-4 w-4 text-emerald-400" />
-                <span className="hidden sm:inline">Progress</span>
+                <TrendingUp className="h-3.5 w-3.5 text-emerald-400" />
+                <span>Progress</span>
               </Link>
 
               <Link
                 to="/dashboard"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-medium transition"
               >
-                <LayoutDashboard className="h-4 w-4 text-emerald-400" />
+                <LayoutDashboard className="h-3.5 w-3.5 text-emerald-400" />
                 <span className="hidden sm:inline">Dashboard</span>
               </Link>
 
-              <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-                <div className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] font-bold">
-                  {user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase()}
-                </div>
-                <span className="text-slate-300 font-medium truncate max-w-[100px]">
-                  {user?.name || user?.username}
-                </span>
-              </div>
+              {/* Notification Bell */}
+              <NotificationBell />
+
+              {/* Settings Link */}
+              <Link
+                to="/settings"
+                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white border border-slate-700/80 transition cursor-pointer"
+                title="Settings & Preferences"
+              >
+                <SettingsIcon className="h-4 w-4" />
+              </Link>
 
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 hover:text-rose-200 border border-rose-500/20 text-xs sm:text-sm font-medium transition cursor-pointer"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 hover:text-rose-200 border border-rose-500/20 text-xs sm:text-sm font-medium transition cursor-pointer"
                 title="Log out"
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Logout</span>
               </button>
             </>

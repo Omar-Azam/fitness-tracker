@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Workout from '../models/Workout.js';
+import Notification from '../models/Notification.js';
 
 /**
  * @desc    Get all workouts for logged-in user with filtering & pagination
@@ -93,7 +94,7 @@ export const getWorkoutById = async (req, res, next) => {
 };
 
 /**
- * @desc    Create a new workout
+ * @desc    Create a new workout and check for 3+ workouts weekly goal trigger
  * @route   POST /api/workouts
  * @access  Private
  */
@@ -120,6 +121,45 @@ export const createWorkout = async (req, res, next) => {
       date: date ? new Date(date) : new Date(),
       duration: duration !== undefined ? Number(duration) : 0,
     });
+
+    // Check weekly workout goal trigger (3+ workouts in current week)
+    try {
+      const now = new Date();
+      const startOfWeek = new Date(now);
+      const dayOfWeek = startOfWeek.getDay();
+      const distanceToMonday = (dayOfWeek + 6) % 7;
+      startOfWeek.setDate(startOfWeek.getDate() - distanceToMonday);
+      startOfWeek.setHours(0, 0, 0, 0);
+
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(endOfWeek.getDate() + 6);
+      endOfWeek.setHours(23, 59, 59, 999);
+
+      const workoutsThisWeek = await Workout.countDocuments({
+        user: req.user._id,
+        date: { $gte: startOfWeek, $lte: endOfWeek },
+      });
+
+      if (workoutsThisWeek >= 3) {
+        // Check if already notified this week
+        const existingNotification = await Notification.findOne({
+          user: req.user._id,
+          type: 'goal_achieved',
+          createdAt: { $gte: startOfWeek },
+        });
+
+        if (!existingNotification) {
+          await Notification.create({
+            user: req.user._id,
+            type: 'goal_achieved',
+            message: `Goal Achieved! You completed ${workoutsThisWeek} workouts this week. 🏆`,
+            read: false,
+          });
+        }
+      }
+    } catch (notifErr) {
+      console.error('Error triggering goal notification:', notifErr);
+    }
 
     return res.status(201).json({
       message: 'Workout created successfully',
