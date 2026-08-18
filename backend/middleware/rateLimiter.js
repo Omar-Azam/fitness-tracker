@@ -6,9 +6,10 @@ import rateLimit from 'express-rate-limit';
  */
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 15, // Limit each IP to 15 requests per windowMs
+  max: process.env.NODE_ENV === 'test' ? 10000 : 15, // High limit for automated testing
   standardHeaders: true, // Return rate limit info in `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  skip: () => process.env.NODE_ENV === 'test',
   message: {
     error: 'Too many authentication attempts from this IP. Please try again in 15 minutes.',
   },

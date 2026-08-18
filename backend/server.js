@@ -18,10 +18,12 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 dotenv.config();
 
 // Initialize MongoDB connection
-if (process.env.MONGO_URI) {
-  connectDB();
-} else {
-  console.warn('[Warning] MONGO_URI is not defined in environment variables.');
+if (process.env.NODE_ENV !== 'test') {
+  if (process.env.MONGO_URI) {
+    connectDB();
+  } else {
+    console.warn('[Warning] MONGO_URI is not defined in environment variables.');
+  }
 }
 
 const app = express();
@@ -66,10 +68,12 @@ app.get('/', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`[Server] Fitness Tracker API running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
-});
+// Start server (only in non-test mode)
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`[Server] Fitness Tracker API running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+  });
+}
 
 export default app;

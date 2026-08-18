@@ -113,6 +113,12 @@ fitness-tracker/
    ```
    *The API will start at `http://localhost:5000` with hot-reloading via Nodemon.*
 
+5. **Run backend integration tests**:
+   ```bash
+   npm test
+   ```
+   *Executes Jest + Supertest test suites against an in-memory MongoDB server (`mongodb-memory-server`).*
+
 ---
 
 ## 💻 Frontend Setup
@@ -144,7 +150,13 @@ fitness-tracker/
    ```
    *The React application will be available at `http://localhost:5173`.*
 
-5. **Build for production**:
+5. **Run frontend component tests**:
+   ```bash
+   npm test
+   ```
+   *Executes Vitest + React Testing Library component tests with jsdom.*
+
+6. **Build for production**:
    ```bash
    npm run build
    ```
