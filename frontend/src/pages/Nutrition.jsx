@@ -231,51 +231,55 @@ export default function Nutrition() {
         }
       />
 
-      {/* Daily Summary Banner */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm dark:shadow-xl relative overflow-hidden">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="p-3 sm:p-3.5 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-400 text-slate-950 shadow-lg shadow-amber-500/20 shrink-0">
-              <Flame className="h-6 w-6 sm:h-7 sm:w-7" />
+      {/* Daily Summary Hero Banner */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 dark:from-slate-900 dark:via-slate-900/90 dark:to-slate-950 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-xl text-white">
+        {/* Ambient background glow */}
+        <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 -mb-12 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4 sm:gap-5">
+            <div className="p-3.5 sm:p-4 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-400 text-slate-950 shadow-lg shadow-amber-500/25 shrink-0 ring-1 ring-white/20">
+              <Flame className="h-6 w-6 sm:h-7 sm:w-7 stroke-[2.5]" />
             </div>
             <div>
-              <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Daily Calorie Intake ({formattedDateTitle})
+              <span className="text-[11px] font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1">
+                Daily Nutrition Overview • {formattedDateTitle}
               </span>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white font-mono">
+              <div className="flex items-baseline gap-2 mt-0.5">
+                <span className="text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight">
                   {summary.totalCalories}
                 </span>
-                <span className="text-xs text-slate-500 dark:text-slate-400">kcal total</span>
+                <span className="text-xs sm:text-sm text-slate-400 font-semibold">kcal total consumed</span>
               </div>
             </div>
           </div>
 
           {/* Macro Breakdown Chips */}
           <div className="grid grid-cols-3 gap-2 sm:gap-3 w-full md:w-auto">
-            <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 rounded-xl p-2.5 sm:p-3 text-center min-w-[80px]">
-              <span className="text-[10px] font-bold uppercase text-blue-600 dark:text-blue-400 tracking-wider">
+            <div className="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-3 text-center min-w-[90px] shadow-sm">
+              <span className="text-[10px] font-extrabold uppercase text-blue-400 tracking-wider block">
                 Protein
               </span>
-              <div className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white font-mono">
+              <div className="text-lg sm:text-xl font-extrabold text-white font-mono mt-0.5">
                 {summary.totalProtein}g
               </div>
             </div>
 
-            <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 rounded-xl p-2.5 sm:p-3 text-center min-w-[80px]">
-              <span className="text-[10px] font-bold uppercase text-amber-600 dark:text-amber-400 tracking-wider">
+            <div className="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-3 text-center min-w-[90px] shadow-sm">
+              <span className="text-[10px] font-extrabold uppercase text-amber-400 tracking-wider block">
                 Carbs
               </span>
-              <div className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white font-mono">
+              <div className="text-lg sm:text-xl font-extrabold text-white font-mono mt-0.5">
                 {summary.totalCarbs}g
               </div>
             </div>
 
-            <div className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 rounded-xl p-2.5 sm:p-3 text-center min-w-[80px]">
-              <span className="text-[10px] font-bold uppercase text-rose-600 dark:text-rose-400 tracking-wider">
+            <div className="bg-slate-800/90 border border-slate-700/80 rounded-2xl p-3 text-center min-w-[90px] shadow-sm">
+              <span className="text-[10px] font-extrabold uppercase text-rose-400 tracking-wider block">
                 Fat
               </span>
-              <div className="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white font-mono">
+              <div className="text-lg sm:text-xl font-extrabold text-white font-mono mt-0.5">
                 {summary.totalFat}g
               </div>
             </div>

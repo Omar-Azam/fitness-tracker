@@ -73,24 +73,24 @@ export default function MealSection({
 
   return (
     <div
-      className={`bg-white dark:bg-slate-900 border ${colorTheme.border} rounded-2xl p-5 shadow-sm dark:shadow-xl space-y-4 relative overflow-hidden`}
+      className={`bg-white dark:bg-slate-900 border ${colorTheme.border} rounded-3xl p-5 sm:p-6 shadow-sm dark:shadow-xl space-y-4 relative overflow-hidden transition-all duration-200`}
     >
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800/80">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3.5 border-b border-slate-100 dark:border-slate-800/80">
         <div className="flex items-center gap-3">
-          <div className={`p-2.5 rounded-xl border ${colorTheme.iconBg}`}>
+          <div className={`p-2.5 rounded-2xl border ${colorTheme.iconBg} shadow-xs`}>
             <IconComponent className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white capitalize">
+            <h3 className="text-base font-extrabold text-slate-900 dark:text-white capitalize tracking-tight">
               {mealType}
             </h3>
             <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-              <span className="font-mono text-amber-600 dark:text-amber-400 font-semibold">
+              <span className="font-mono text-amber-600 dark:text-amber-400 font-extrabold text-xs">
                 {mealCalories} kcal
               </span>
               <span>•</span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">
+              <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
                 P: {Math.round(mealProtein * 10) / 10}g | C: {Math.round(mealCarbs * 10) / 10}g | F: {Math.round(mealFat * 10) / 10}g
               </span>
             </div>
@@ -99,16 +99,16 @@ export default function MealSection({
 
         <button
           onClick={() => onAdd(mealType)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-emerald-600 dark:text-emerald-400 border border-slate-200 dark:border-slate-700 text-xs font-semibold transition cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-emerald-600 dark:text-emerald-400 border border-slate-200 dark:border-slate-700/80 text-xs font-bold transition active:scale-95 cursor-pointer shadow-xs"
         >
-          <Plus className="h-3.5 w-3.5" />
-          Add Food
+          <Plus className="h-3.5 w-3.5 stroke-[3]" />
+          <span>Add Food</span>
         </button>
       </div>
 
       {/* Entries List */}
       {entries.length === 0 ? (
-        <div className="text-center py-5 px-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-950/40 text-slate-400 dark:text-slate-500 text-xs">
+        <div className="text-center py-6 px-4 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800/80 bg-slate-50/50 dark:bg-slate-950/40 text-slate-400 dark:text-slate-500 text-xs">
           No food logged for {mealType} today
         </div>
       ) : (

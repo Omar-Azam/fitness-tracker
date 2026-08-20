@@ -173,82 +173,100 @@ export default function WorkoutForm({
           )}
 
           {/* Basic Details */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
-                Workout Title <span className="text-emerald-600 dark:text-emerald-400">*</span>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                Workout Title <span className="text-emerald-500">*</span>
               </label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="e.g. Chest & Triceps Hypertrophy"
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
+                placeholder="e.g. Upper Body Hypertrophy & Arms"
+                className="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 text-xs sm:text-sm font-semibold transition"
                 required
               />
             </div>
 
+            {/* Category Selector Pills */}
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
-                Category
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                Training Category
               </label>
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 text-sm"
-              >
-                <option value="strength">Strength Training</option>
-                <option value="cardio">Cardio & Running</option>
-                <option value="flexibility">Flexibility & Yoga</option>
-                <option value="other">Other / Mixed</option>
-              </select>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { id: 'strength', label: 'Strength', icon: Dumbbell, activeClass: 'border-emerald-500 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 ring-1 ring-emerald-500/30' },
+                  { id: 'cardio', label: 'Cardio', icon: Clock, activeClass: 'border-amber-500 text-amber-600 dark:text-amber-400 bg-amber-500/10 ring-1 ring-amber-500/30' },
+                  { id: 'flexibility', label: 'Flexibility', icon: Dumbbell, activeClass: 'border-teal-500 text-teal-600 dark:text-teal-400 bg-teal-500/10 ring-1 ring-teal-500/30' },
+                  { id: 'other', label: 'Other', icon: Tag, activeClass: 'border-purple-500 text-purple-600 dark:text-purple-400 bg-purple-500/10 ring-1 ring-purple-500/30' },
+                ].map((cat) => {
+                  const Icon = cat.icon;
+                  const isSelected = formData.category === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setFormData((prev) => ({ ...prev, category: cat.id }))}
+                      className={`flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border text-xs font-bold transition cursor-pointer ${
+                        isSelected
+                          ? cat.activeClass
+                          : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-700'
+                      }`}
+                    >
+                      <Icon className="h-3.5 w-3.5" />
+                      <span>{cat.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1">
-                <Calendar className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
-                Date
-              </label>
-              <input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleChange}
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 text-sm"
-              />
-            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1">
+                  <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                  Date
+                </label>
+                <input
+                  type="date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleChange}
+                  className="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 text-xs sm:text-sm font-mono transition"
+                />
+              </div>
 
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1">
-                <Clock className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
-                Duration <span className="text-slate-400 dark:text-slate-500 text-[10px] font-normal">(minutes)</span>
-              </label>
-              <input
-                type="number"
-                name="duration"
-                min="0"
-                value={formData.duration}
-                onChange={handleChange}
-                placeholder="e.g. 45"
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
-              />
-            </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1">
+                  <Clock className="h-3.5 w-3.5 text-slate-400" />
+                  Duration (mins)
+                </label>
+                <input
+                  type="number"
+                  name="duration"
+                  min="0"
+                  value={formData.duration}
+                  onChange={handleChange}
+                  placeholder="e.g. 45"
+                  className="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-xs sm:text-sm transition"
+                />
+              </div>
 
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1">
-                <Tag className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
-                Tags <span className="text-slate-400 dark:text-slate-500 text-[10px] font-normal">(comma separated)</span>
-              </label>
-              <input
-                type="text"
-                name="tags"
-                value={formData.tags}
-                onChange={handleChange}
-                placeholder="e.g. chest, hypertrophy, pr"
-                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
-              />
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1">
+                  <Tag className="h-3.5 w-3.5 text-slate-400" />
+                  Tags
+                </label>
+                <input
+                  type="text"
+                  name="tags"
+                  value={formData.tags}
+                  onChange={handleChange}
+                  placeholder="e.g. chest, pr"
+                  className="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-xs sm:text-sm transition"
+                />
+              </div>
             </div>
           </div>
 
