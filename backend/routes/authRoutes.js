@@ -4,6 +4,7 @@ import {
   login,
   getMe,
   updateProfile,
+  uploadProfilePicture,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
 import {
@@ -12,6 +13,7 @@ import {
   validateUpdateProfile,
 } from '../middleware/validator.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
+import { handleProfilePictureUpload } from '../middleware/upload.js';
 
 const router = express.Router();
 
@@ -22,5 +24,12 @@ router.post('/login', authLimiter, validateLogin, login);
 // Protected user routes
 router.get('/me', protect, getMe);
 router.put('/profile', protect, validateUpdateProfile, updateProfile);
+router.put(
+  '/profile/picture',
+  protect,
+  handleProfilePictureUpload,
+  uploadProfilePicture
+);
 
 export default router;
+

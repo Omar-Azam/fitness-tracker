@@ -14,8 +14,8 @@ const preferencesSchema = new mongoose.Schema(
     theme: {
       type: String,
       enum: {
-        values: ['light', 'dark'],
-        message: '{VALUE} is not a valid theme (must be light or dark)',
+        values: ['light', 'dark', 'system'],
+        message: '{VALUE} is not a valid theme (must be light, dark, or system)',
       },
       default: 'dark',
     },

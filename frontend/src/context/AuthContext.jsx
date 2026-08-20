@@ -11,17 +11,15 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Sync theme with user preferences or default to dark
+  // Sync theme with user preferences if available
   useEffect(() => {
-    const theme = user?.preferences?.theme || localStorage.getItem('fitness_theme') || 'dark';
-    if (theme === 'light') {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.classList.add('light');
-      localStorage.setItem('fitness_theme', 'light');
-    } else {
-      document.documentElement.classList.remove('light');
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('fitness_theme', 'dark');
+    if (user?.preferences?.theme) {
+      const userTheme = user.preferences.theme;
+      const currentStored = localStorage.getItem('fitness_theme');
+      if (userTheme !== currentStored) {
+        localStorage.setItem('fitness_theme', userTheme);
+        window.dispatchEvent(new Event('themechange'));
+      }
     }
   }, [user?.preferences?.theme]);
 
@@ -113,8 +111,36 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Upload user profile picture
+  const uploadProfilePicture = async (file) => {
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append('picture', file);
+
+      const response = await api.put('/auth/profile/picture', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const updatedUser = response.data.user;
+      setUser(updatedUser);
+      return {
+        success: true,
+        user: updatedUser,
+        profilePicture: response.data.profilePicture,
+      };
+    } catch (err) {
+      const msg = err.message || 'Failed to upload profile picture';
+      setError(msg);
+      throw new Error(msg);
+    }
+  };
+
   const value = {
     user,
+    setUser,
     token,
     loading,
     error,
@@ -122,6 +148,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateProfile,
+    uploadProfilePicture,
     checkAuth,
     isAuthenticated: Boolean(user),
   };

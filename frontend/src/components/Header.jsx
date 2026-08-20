@@ -16,7 +16,7 @@ import SearchBar from './SearchBar';
 import NotificationBell from './NotificationBell';
 
 export default function Header() {
-  const { logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -35,7 +35,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
+      <header className="border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
           {/* Brand Logo */}
           <Link to="/" className="flex items-center gap-2.5 group shrink-0">
@@ -43,7 +43,7 @@ export default function Header() {
               <Dumbbell className="h-4.5 w-4.5 text-slate-950 font-bold" />
             </div>
             <div>
-              <span className="font-bold text-base sm:text-lg text-white tracking-tight flex items-center gap-1.5">
+              <span className="font-bold text-base sm:text-lg text-slate-900 dark:text-white tracking-tight flex items-center gap-1.5">
                 Fitness Tracker
               </span>
             </div>
@@ -76,8 +76,8 @@ export default function Header() {
                         to={link.path}
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs sm:text-sm font-medium transition ${
                           isActive
-                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                            : 'text-slate-300 hover:text-white hover:bg-slate-800 border border-transparent'
+                            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
+                            : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 border border-transparent'
                         }`}
                       >
                         <Icon className="h-3.5 w-3.5" />
@@ -90,22 +90,35 @@ export default function Header() {
                 {/* Notification Bell */}
                 <NotificationBell />
 
-                {/* Settings Link (Desktop) */}
+                {/* Profile / Settings Link (Desktop) */}
                 <Link
                   to="/settings"
-                  className={`hidden md:flex p-2 rounded-xl border transition cursor-pointer ${
+                  className={`hidden md:flex items-center gap-2 p-1 pl-1.5 pr-2.5 rounded-xl border transition cursor-pointer ${
                     location.pathname === '/settings'
-                      ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                      : 'bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white border-slate-700/80'
+                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
+                      : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border-slate-200 dark:border-slate-700/80'
                   }`}
-                  title="Settings & Preferences"
+                  title={`Settings (@${user?.username || 'user'})`}
                 >
-                  <SettingsIcon className="h-4 w-4" />
+                  {user?.profilePicture ? (
+                    <img
+                      src={user.profilePicture}
+                      alt={user?.name || user?.username || 'Avatar'}
+                      className="w-6 h-6 rounded-lg object-cover border border-emerald-500/40 shrink-0"
+                    />
+                  ) : (
+                    <div className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-[10px] font-bold uppercase font-mono shrink-0">
+                      {user?.username ? user.username.charAt(0) : <SettingsIcon className="h-3.5 w-3.5" />}
+                    </div>
+                  )}
+                  <span className="text-xs font-semibold max-w-[85px] truncate">
+                    {user?.name || user?.username || 'Settings'}
+                  </span>
                 </Link>
 
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 hover:text-rose-200 border border-rose-500/20 text-xs font-medium transition cursor-pointer"
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-300 hover:text-rose-700 dark:hover:text-rose-200 border border-rose-500/20 text-xs font-medium transition cursor-pointer"
                   title="Log out"
                 >
                   <LogOut className="h-3.5 w-3.5" />
@@ -116,7 +129,7 @@ export default function Header() {
               <>
                 <Link
                   to="/login"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700/80 text-xs sm:text-sm font-medium transition"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-700 dark:text-slate-200 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700/80 text-xs sm:text-sm font-medium transition"
                 >
                   <LogIn className="h-4 w-4 text-slate-400" />
                   <span>Login</span>
@@ -136,21 +149,30 @@ export default function Header() {
 
       {/* Mobile Bottom Navigation Bar (Visible on mobile screens < 768px when authenticated) */}
       {isAuthenticated && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-900/95 backdrop-blur-lg border-t border-slate-800 px-3 py-2 flex items-center justify-around shadow-2xl safe-area-pb">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 px-3 py-2 flex items-center justify-around shadow-2xl safe-area-pb">
           {navLinks.map((link) => {
             const Icon = link.icon;
             const isActive = location.pathname === link.path;
+            const isSettings = link.name === 'Settings';
             return (
               <Link
                 key={link.path}
                 to={link.path}
                 className={`flex flex-col items-center gap-1 py-1 px-2.5 rounded-xl transition ${
                   isActive
-                    ? 'text-emerald-400'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
-                <Icon className={`h-5 w-5 ${isActive ? 'scale-110' : ''} transition-transform`} />
+                {isSettings && user?.profilePicture ? (
+                  <img
+                    src={user.profilePicture}
+                    alt="Settings"
+                    className={`w-5 h-5 rounded-md object-cover border border-emerald-500/40 ${isActive ? 'scale-110' : ''} transition-transform`}
+                  />
+                ) : (
+                  <Icon className={`h-5 w-5 ${isActive ? 'scale-110' : ''} transition-transform`} />
+                )}
                 <span className="text-[10px] font-semibold tracking-tight">{link.name}</span>
               </Link>
             );

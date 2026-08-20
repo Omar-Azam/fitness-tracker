@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -18,11 +19,12 @@ import NotFoundPage from './pages/NotFoundPage';
 export default function App() {
   return (
     <ErrorBoundary>
-      <AuthProvider>
-        <ToastProvider>
-          <BrowserRouter>
-            <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950">
-              <Header />
+      <ThemeProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <BrowserRouter>
+              <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950 transition-colors duration-150">
+                <Header />
               <main className="flex-1 max-w-6xl w-full mx-auto px-3 sm:px-6 pb-24 md:pb-8">
                 <Routes>
                   <Route path="/" element={<HomePage />} />
@@ -71,13 +73,14 @@ export default function App() {
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
               </main>
-              <footer className="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500 mb-16 md:mb-0">
+              <footer className="border-t border-slate-200 dark:border-slate-800/80 py-6 text-center text-xs text-slate-500 dark:text-slate-400 mb-16 md:mb-0">
                 <p>© {new Date().getFullYear()} Fitness Tracker • MERN Stack Architecture</p>
               </footer>
             </div>
           </BrowserRouter>
         </ToastProvider>
       </AuthProvider>
-    </ErrorBoundary>
+    </ThemeProvider>
+  </ErrorBoundary>
   );
 }

@@ -105,7 +105,18 @@ fitness-tracker/
    MONGO_URI=mongodb://localhost:27017/fitness-tracker
    JWT_SECRET=your_jwt_secret_key_here
    FRONTEND_URL=http://localhost:5173
+
+   # Cloudinary Image Storage
+   CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+   CLOUDINARY_API_KEY=your_cloudinary_api_key
+   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
    ```
+
+   > **☁️ Cloudinary Setup Instructions**:
+   > 1. Create a free account at [Cloudinary](https://cloudinary.com).
+   > 2. Log in and navigate to the **Cloudinary Console Dashboard** (`https://cloudinary.com/console`).
+   > 3. Under **Product Environment Credentials**, copy your **Cloud Name**, **API Key**, and **API Secret**.
+   > 4. Paste these values into `backend/.env`. Server startup will NOT fail if they are omitted initially; however, the profile picture upload endpoint will gracefully return a clear notification until they are populated.
 
 4. **Start the backend development server**:
    ```bash
@@ -166,6 +177,7 @@ fitness-tracker/
 ## 📱 Responsive UI & Polish Highlights
 
 - **Mobile Navigation (375px+)**: Sleek bottom navigation bar for mobile thumb navigation across Dashboard, Workouts, Nutrition, Progress, and Settings.
+- **Profile Picture Upload**: In-memory streaming to Cloudinary with square smart cropping, deterministic asset overwrites, live avatar preview, and immediate navbar avatar updates.
 - **Loading Skeletons (`components/Skeletons.jsx`)**: Animated shimmer placeholders for cards, stats, charts, and activity feeds during data fetching.
 - **Global Toast System (`context/ToastContext.jsx`)**: Non-blocking, animated feedback messages (`toast.success()`, `toast.error()`) for all user mutations.
 - **Error Boundary (`components/ErrorBoundary.jsx`)**: React Error Boundary preventing screen crashes with quick reload and home redirection.
@@ -184,7 +196,8 @@ fitness-tracker/
 | `POST` | `/api/auth/register` | Register new user with username, email, password | Yes (15 / 15m) | No |
 | `POST` | `/api/auth/login` | Login with email/username and password | Yes (15 / 15m) | No |
 | `GET` | `/api/auth/me` | Get logged-in user profile (no password field) | No | Yes (Bearer Token) |
-| `PUT` | `/api/auth/profile` | Update profile (`name`, `profilePicture`, `preferences`) | No | Yes (Bearer Token) |
+| `PUT` | `/api/auth/profile` | Update profile (`name`, `preferences`) | No | Yes (Bearer Token) |
+| `PUT` | `/api/auth/profile/picture` | Upload profile image to Cloudinary (`multipart/form-data`) | No | Yes (Bearer Token) |
 
 ### 🏋️ Workouts (`/api/workouts`)
 

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import { isCloudinaryConfigured, uploadBufferToCloudinary } from '../config/cloudinary.js';
 
 /**
  * Generate a signed JWT token for a given user ID
@@ -161,5 +162,55 @@ export const updateProfile = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+/**
+ * @desc    Upload user profile picture to Cloudinary
+ * @route   PUT /api/auth/profile/picture
+ * @access  Private
+ */
+export const uploadProfilePicture = async (req, res, next) => {
+  try {
+    // 1. Verify file was provided by multer
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({
+        error: 'No image file uploaded. Please select a JPG, PNG, or WebP file under 2MB.',
+      });
+    }
+
+    // 2. Verify Cloudinary environment configuration
+    if (!isCloudinaryConfigured()) {
+      return res.status(503).json({
+        error: 'Cloudinary storage is not configured on the server. Please set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET in your environment variables.',
+      });
+    }
+
+    // 3. Find user
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // 4. Upload buffer to Cloudinary using deterministic public_id
+    const publicId = `user_${user._id}`;
+    const uploadResult = await uploadBufferToCloudinary(req.file.buffer, {
+      public_id: publicId,
+    });
+
+    // 5. Update user model with secure_url
+    user.profilePicture = uploadResult.secure_url;
+    const updatedUser = await user.save();
+
+    return res.status(200).json({
+      message: 'Profile picture uploaded successfully',
+      profilePicture: updatedUser.profilePicture,
+      user: sanitizeUser(updatedUser),
+    });
+  } catch (error) {
+    console.error('[Cloudinary Upload Error]:', error);
+    return res.status(500).json({
+      error: error.message || 'Failed to upload image to Cloudinary',
+    });
   }
 };

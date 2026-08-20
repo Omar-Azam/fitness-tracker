@@ -143,21 +143,21 @@ export default function WorkoutForm({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
         {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
               <Dumbbell className="h-5 w-5" />
             </div>
-            <h2 className="text-lg font-bold text-white">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               {isEditing ? 'Edit Workout' : 'Log New Workout'}
             </h2>
           </div>
           <button
             onClick={handleClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
@@ -166,7 +166,7 @@ export default function WorkoutForm({
         {/* Modal Body */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
           {errorMessage && (
-            <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center gap-3 text-rose-300 text-sm">
+            <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 flex items-center gap-3 text-rose-700 dark:text-rose-300 text-sm">
               <AlertCircle className="h-5 w-5 shrink-0" />
               <span>{errorMessage}</span>
             </div>
@@ -175,8 +175,8 @@ export default function WorkoutForm({
           {/* Basic Details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                Workout Title <span className="text-emerald-400">*</span>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                Workout Title <span className="text-emerald-600 dark:text-emerald-400">*</span>
               </label>
               <input
                 type="text"
@@ -184,20 +184,20 @@ export default function WorkoutForm({
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="e.g. Chest & Triceps Hypertrophy"
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                 Category
               </label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 text-sm"
               >
                 <option value="strength">Strength Training</option>
                 <option value="cardio">Cardio & Running</option>
@@ -207,8 +207,8 @@ export default function WorkoutForm({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5 flex items-center gap-1">
-                <Calendar className="h-3.5 w-3.5 text-slate-400" />
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1">
+                <Calendar className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
                 Date
               </label>
               <input
@@ -216,14 +216,14 @@ export default function WorkoutForm({
                 name="date"
                 value={formData.date}
                 onChange={handleChange}
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 text-sm"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5 flex items-center gap-1">
-                <Clock className="h-3.5 w-3.5 text-slate-400" />
-                Duration <span className="text-slate-500 text-[10px] font-normal">(minutes)</span>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1">
+                <Clock className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
+                Duration <span className="text-slate-400 dark:text-slate-500 text-[10px] font-normal">(minutes)</span>
               </label>
               <input
                 type="number"
@@ -232,14 +232,14 @@ export default function WorkoutForm({
                 value={formData.duration}
                 onChange={handleChange}
                 placeholder="e.g. 45"
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5 flex items-center gap-1">
-                <Tag className="h-3.5 w-3.5 text-slate-400" />
-                Tags <span className="text-slate-500 text-[10px] font-normal">(comma separated)</span>
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1">
+                <Tag className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
+                Tags <span className="text-slate-400 dark:text-slate-500 text-[10px] font-normal">(comma separated)</span>
               </label>
               <input
                 type="text"
@@ -247,19 +247,19 @@ export default function WorkoutForm({
                 value={formData.tags}
                 onChange={handleChange}
                 placeholder="e.g. chest, hypertrophy, pr"
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm"
               />
             </div>
           </div>
 
           {/* Dynamic Exercise Rows */}
-          <div className="pt-4 border-t border-slate-800 space-y-4">
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   Exercises ({formData.exercises.length})
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Track sets, reps, weight, and exercise notes
                 </p>
               </div>
@@ -267,7 +267,7 @@ export default function WorkoutForm({
               <button
                 type="button"
                 onClick={handleAddExercise}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-emerald-400 border border-slate-700 text-xs font-semibold transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-emerald-600 dark:text-emerald-400 border border-slate-200 dark:border-slate-700 text-xs font-semibold transition cursor-pointer"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Add Exercise
@@ -275,7 +275,7 @@ export default function WorkoutForm({
             </div>
 
             {formData.exercises.length === 0 ? (
-              <div className="text-center py-6 px-4 rounded-xl border border-dashed border-slate-800 bg-slate-950/40 text-slate-400 text-xs">
+              <div className="text-center py-6 px-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 text-slate-500 dark:text-slate-400 text-xs">
                 No exercises added yet. Click "+ Add Exercise" above to log exercises.
               </div>
             ) : (
@@ -283,10 +283,10 @@ export default function WorkoutForm({
                 {formData.exercises.map((exercise, index) => (
                   <div
                     key={index}
-                    className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-3"
+                    className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-bold text-slate-400">
+                      <span className="text-xs font-bold text-slate-500 dark:text-slate-400">
                         #{index + 1}
                       </span>
                       <input
@@ -296,13 +296,13 @@ export default function WorkoutForm({
                         onChange={(e) =>
                           handleExerciseChange(index, 'name', e.target.value)
                         }
-                        className="flex-1 px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white text-xs placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                        className="flex-1 px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-900 dark:text-white text-xs placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                         required
                       />
                       <button
                         type="button"
                         onClick={() => handleRemoveExercise(index)}
-                        className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
+                        className="p-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition cursor-pointer"
                         title="Remove exercise"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -311,7 +311,7 @@ export default function WorkoutForm({
 
                     <div className="grid grid-cols-3 gap-2">
                       <div>
-                        <label className="block text-[10px] text-slate-400 uppercase font-semibold mb-1">
+                        <label className="block text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
                           Sets
                         </label>
                         <input
@@ -322,12 +322,12 @@ export default function WorkoutForm({
                           onChange={(e) =>
                             handleExerciseChange(index, 'sets', e.target.value)
                           }
-                          className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white text-xs focus:outline-none focus:border-emerald-500"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-900 dark:text-white text-xs focus:outline-none focus:border-emerald-500"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[10px] text-slate-400 uppercase font-semibold mb-1">
+                        <label className="block text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
                           Reps
                         </label>
                         <input
@@ -338,12 +338,12 @@ export default function WorkoutForm({
                           onChange={(e) =>
                             handleExerciseChange(index, 'reps', e.target.value)
                           }
-                          className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white text-xs focus:outline-none focus:border-emerald-500"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-900 dark:text-white text-xs focus:outline-none focus:border-emerald-500"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[10px] text-slate-400 uppercase font-semibold mb-1">
+                        <label className="block text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold mb-1">
                           Weight (kg/lbs)
                         </label>
                         <input
@@ -355,7 +355,7 @@ export default function WorkoutForm({
                           onChange={(e) =>
                             handleExerciseChange(index, 'weight', e.target.value)
                           }
-                          className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white text-xs focus:outline-none focus:border-emerald-500"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-900 dark:text-white text-xs focus:outline-none focus:border-emerald-500"
                         />
                       </div>
                     </div>
@@ -368,7 +368,7 @@ export default function WorkoutForm({
                         onChange={(e) =>
                           handleExerciseChange(index, 'notes', e.target.value)
                         }
-                        className="w-full px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-slate-300 text-xs placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                        className="w-full px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-700 dark:text-slate-300 text-xs placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                       />
                     </div>
                   </div>
@@ -379,12 +379,12 @@ export default function WorkoutForm({
         </form>
 
         {/* Modal Footer */}
-        <div className="px-6 py-4 border-t border-slate-800 bg-slate-950/40 flex items-center justify-end gap-3">
+        <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 flex items-center justify-end gap-3">
           <button
             type="button"
             onClick={handleClose}
             disabled={isSubmitting}
-            className="px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 text-xs font-semibold transition cursor-pointer"
+            className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-semibold transition cursor-pointer"
           >
             Cancel
           </button>

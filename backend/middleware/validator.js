@@ -66,8 +66,8 @@ export const validateUpdateProfile = (req, res, next) => {
       return res.status(400).json({ error: 'Units must be either "metric" or "imperial"' });
     }
 
-    if (preferences.theme && !['light', 'dark'].includes(preferences.theme)) {
-      return res.status(400).json({ error: 'Theme must be either "light" or "dark"' });
+    if (preferences.theme && !['light', 'dark', 'system'].includes(preferences.theme)) {
+      return res.status(400).json({ error: 'Theme must be "light", "dark", or "system"' });
     }
 
     if (

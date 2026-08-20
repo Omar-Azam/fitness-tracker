@@ -147,4 +147,64 @@ describe('Auth Integration Tests (/api/auth)', () => {
       expect(res.body.error).toMatch(/invalid|expired/i);
     });
   });
+
+  describe('PUT /api/auth/profile/picture (Profile Picture Upload)', () => {
+    let authToken;
+
+    beforeEach(async () => {
+      const res = await request(app).post('/api/auth/register').send(testUser);
+      authToken = res.body.token;
+    });
+
+    it('should return 401 when uploading without auth token', async () => {
+      const res = await request(app)
+        .put('/api/auth/profile/picture')
+        .attach('picture', Buffer.from('fake image content'), 'avatar.png');
+
+      expect(res.status).toBe(401);
+    });
+
+    it('should return 400 when no file is uploaded', async () => {
+      const res = await request(app)
+        .put('/api/auth/profile/picture')
+        .set('Authorization', `Bearer ${authToken}`);
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toMatch(/no image file|select an image/i);
+    });
+
+    it('should reject invalid file types (e.g. txt)', async () => {
+      const res = await request(app)
+        .put('/api/auth/profile/picture')
+        .set('Authorization', `Bearer ${authToken}`)
+        .attach('picture', Buffer.from('plain text content'), {
+          filename: 'test.txt',
+          contentType: 'text/plain',
+        });
+
+      expect(res.status).toBe(400);
+      expect(res.body.error).toMatch(/invalid file type/i);
+    });
+
+    it('should return 503 when Cloudinary is not configured', async () => {
+      const originalEnv = { ...process.env };
+      delete process.env.CLOUDINARY_CLOUD_NAME;
+      delete process.env.CLOUDINARY_API_KEY;
+      delete process.env.CLOUDINARY_API_SECRET;
+
+      const res = await request(app)
+        .put('/api/auth/profile/picture')
+        .set('Authorization', `Bearer ${authToken}`)
+        .attach('picture', Buffer.from('fake image content'), {
+          filename: 'avatar.jpg',
+          contentType: 'image/jpeg',
+        });
+
+      expect(res.status).toBe(503);
+      expect(res.body.error).toMatch(/cloudinary storage is not configured/i);
+
+      process.env = originalEnv;
+    });
+  });
 });
+

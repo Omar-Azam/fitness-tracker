@@ -70,7 +70,7 @@ Represents an authenticated account with user preferences.
   profilePicture: { type: String, default: '' },
   preferences: {
     units: { type: String, enum: ['metric', 'imperial'], default: 'metric' },
-    theme: { type: String, enum: ['light', 'dark'], default: 'dark' },
+    theme: { type: String, enum: ['light', 'dark', 'system'], default: 'dark' },
     notificationsEnabled: { type: Boolean, default: true }
   },
   createdAt: Date,
@@ -118,8 +118,8 @@ Represents meal records containing a list of food items and calculated macronutr
       unit: { type: String, default: 'serving' },
       calories: { type: Number, default: 0, min: 0 },
       protein: { type: Number, default: 0, min: 0 }, // in grams
-      carbs: { type: Number, default: 0, min: 0 },   // in grams
-      fat: { type: Number, default: 0, min: 0 }      // in grams
+      carbs: { type: Number, default: 0, min: 0 }, // in grams
+      fat: { type: Number, default: 0, min: 0 } // in grams
     }
   ],
   date: { type: Date, required: true, default: Date.now },
@@ -127,27 +127,27 @@ Represents meal records containing a list of food items and calculated macronutr
   updatedAt: Date
 }
 ```
-*Indexes: `{ user: 1, date: -1 }`, `{ user: 1, mealType: 1, date: -1 }`*
+*Indexes: `{ user: 1, date: -1 }`*
 
 ### 4. ProgressLog Model (`ProgressLog.js`)
-Represents body measurement tracking and user-defined athletic performance milestones.
+Represents periodic body measurements and athletic performance benchmarks.
 
 ```javascript
 {
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
   date: { type: Date, required: true, default: Date.now },
-  weight: { type: Number, min: 0 },
+  weight: { type: Number },
   bodyMeasurements: {
-    chest: { type: Number, min: 0 },
-    waist: { type: Number, min: 0 },
-    hips: { type: Number, min: 0 },
-    arms: { type: Number, min: 0 },
-    thighs: { type: Number, min: 0 }
+    chest: Number,
+    waist: Number,
+    hips: Number,
+    arms: Number,
+    thighs: Number
   },
   performanceMetrics: [
     {
-      metricName: { type: String, required: true, trim: true },
-      value: { type: Number, required: true, min: 0 },
+      metricName: { type: String, required: true },
+      value: { type: Number, required: true },
       unit: { type: String, default: '' }
     }
   ],
@@ -155,28 +155,27 @@ Represents body measurement tracking and user-defined athletic performance miles
   updatedAt: Date
 }
 ```
-*Index: `{ user: 1, date: -1 }`*
+*Indexes: `{ user: 1, date: -1 }`*
 
 ### 5. Notification Model (`Notification.js`)
-Represents milestone alerts and system notifications.
+Represents system and milestone events for users.
 
 ```javascript
 {
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-  type: { type: String, enum: ['workout_reminder', 'meal_reminder', 'goal_achieved', 'system'], required: true },
-  message: { type: String, required: true, trim: true },
+  title: { type: String, required: true },
+  message: { type: String, required: true },
+  type: { type: String, enum: ['goal_achieved', 'system_alert', 'reminder'], default: 'system_alert' },
   read: { type: Boolean, default: false },
   createdAt: Date,
   updatedAt: Date
 }
 ```
-*Indexes: `{ user: 1, read: 1, createdAt: -1 }`, `{ user: 1, createdAt: -1 }`*
+*Indexes: `{ user: 1, read: 1, createdAt: -1 }`*
 
 ---
 
-## 🔌 API Endpoints Reference
-
-All data endpoints require an `Authorization: Bearer <JWT>` header unless designated as Public.
+## 🌐 Complete API Endpoints Table
 
 ### Authentication Endpoints (`/api/auth`)
 | Method | Path | Auth | Rate Limit | Description |
@@ -184,7 +183,8 @@ All data endpoints require an `Authorization: Bearer <JWT>` header unless design
 | `POST` | `/api/auth/register` | No | 15 / 15m | Register new user account with `username`, `email`, `password`, `name` |
 | `POST` | `/api/auth/login` | No | 15 / 15m | Authenticate user credentials and receive JWT |
 | `GET` | `/api/auth/me` | **Yes** | No | Return currently logged-in user profile (no password) |
-| `PUT` | `/api/auth/profile` | **Yes** | No | Update user details (`name`, `profilePicture`, `preferences`) |
+| `PUT` | `/api/auth/profile` | **Yes** | No | Update user details (`name`, `preferences`) |
+| `PUT` | `/api/auth/profile/picture` | **Yes** | No | Stream user profile picture to Cloudinary (in-memory Multer) |
 
 ### Workout Endpoints (`/api/workouts`)
 | Method | Path | Auth | Query / Params | Description |
@@ -268,6 +268,11 @@ All data endpoints require an `Authorization: Bearer <JWT>` header unless design
    MONGO_URI=mongodb://localhost:27017/fitness-tracker
    JWT_SECRET=your_super_secret_jwt_key_here
    FRONTEND_URL=http://localhost:5173
+
+   # Cloudinary Image Storage
+   CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+   CLOUDINARY_API_KEY=your_cloudinary_api_key
+   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
    ```
 4. **Start the API server**:
    ```bash

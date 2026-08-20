@@ -115,26 +115,26 @@ export default function Dashboard() {
   return (
     <div className="max-w-6xl mx-auto py-6 sm:py-8 space-y-6 sm:space-y-8 px-2 sm:px-4">
       {/* Welcome Banner */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm dark:shadow-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3 sm:gap-4">
           <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-slate-950 font-bold text-xl sm:text-2xl shadow-lg shadow-emerald-500/20 shrink-0">
             {user?.name ? user.name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U'}
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h1 className="text-lg sm:text-2xl font-extrabold text-white tracking-tight">
+              <h1 className="text-lg sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                 Welcome, {user?.name || user?.username}!
               </h1>
-              <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
+              <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono">
                 @{user?.username}
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-1">Here is your active fitness & nutrition overview</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Here is your active fitness & nutrition overview</p>
           </div>
         </div>
 
-        <div className="text-[11px] sm:text-xs text-slate-500 bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-800 shrink-0">
-          Member since: <span className="text-slate-300 font-mono">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Today'}</span>
+        <div className="text-[11px] sm:text-xs text-slate-500 bg-slate-50 dark:bg-slate-950 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 shrink-0">
+          Member since: <span className="text-slate-700 dark:text-slate-300 font-mono">{user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Today'}</span>
         </div>
       </div>
 
@@ -149,80 +149,80 @@ export default function Dashboard() {
         ) : (
           <>
             {/* Card 1: Workouts This Week */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col justify-between space-y-3">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm dark:shadow-lg flex flex-col justify-between space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Workouts This Week
                 </span>
-                <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
                   <Dumbbell className="h-4 w-4" />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-extrabold text-white font-mono">
+                  <span className="text-3xl font-extrabold text-slate-900 dark:text-white font-mono">
                     {stats.workoutsThisWeek ?? 0}
                   </span>
-                  <span className="text-xs text-slate-400">sessions completed</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">sessions completed</span>
                 </div>
-                <p className="text-[11px] text-emerald-400 mt-1">Keep pushing towards your weekly goal</p>
+                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-1">Keep pushing towards your weekly goal</p>
               </div>
 
               <Link
                 to="/workouts"
-                className="text-xs font-semibold text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1 pt-1"
+                className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 inline-flex items-center gap-1 pt-1"
               >
                 View workout logs <ChevronRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
             {/* Card 2: Nutrition Days Logged */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col justify-between space-y-3">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm dark:shadow-lg flex flex-col justify-between space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Nutrition Days Logged
                 </span>
-                <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
                   <Apple className="h-4 w-4" />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-extrabold text-white font-mono">
+                  <span className="text-3xl font-extrabold text-slate-900 dark:text-white font-mono">
                     {stats.nutritionDaysThisWeek ?? 0}
                   </span>
-                  <span className="text-xs text-slate-400">/ 7 days this week</span>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">/ 7 days this week</span>
                 </div>
-                <p className="text-[11px] text-amber-400 mt-1">Consistency fuels performance</p>
+                <p className="text-[11px] text-amber-600 dark:text-amber-400 mt-1">Consistency fuels performance</p>
               </div>
 
               <Link
                 to="/nutrition"
-                className="text-xs font-semibold text-amber-400 hover:text-amber-350 inline-flex items-center gap-1 pt-1"
+                className="text-xs font-semibold text-amber-600 dark:text-amber-400 hover:text-amber-500 dark:hover:text-amber-350 inline-flex items-center gap-1 pt-1"
               >
                 Track today's meals <ChevronRight className="h-3.5 w-3.5" />
               </Link>
             </div>
 
             {/* Card 3: Weight Trend Sparkline */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-5 shadow-lg flex flex-col justify-between space-y-2 relative overflow-hidden sm:col-span-2 lg:col-span-1">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-5 shadow-sm dark:shadow-lg flex flex-col justify-between space-y-2 relative overflow-hidden sm:col-span-2 lg:col-span-1">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                   Latest Weight
                 </span>
-                <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
                   <Scale className="h-4 w-4" />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-extrabold text-white font-mono">
+                  <span className="text-3xl font-extrabold text-slate-900 dark:text-white font-mono">
                     {stats.latestWeight !== null ? stats.latestWeight : '--'}
                   </span>
-                  <span className="text-xs text-slate-400 font-mono">
+                  <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
                     {stats.weightUnit || weightUnit}
                   </span>
                 </div>
@@ -243,7 +243,7 @@ export default function Dashboard() {
                         content={({ active, payload }) => {
                           if (active && payload && payload.length) {
                             return (
-                              <div className="bg-slate-950 border border-slate-700 px-2 py-1 rounded text-[10px] text-cyan-300 font-mono shadow-md">
+                              <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 px-2 py-1 rounded text-[10px] text-cyan-600 dark:text-cyan-300 font-mono shadow-md">
                                 {payload[0].value} {weightUnit}
                               </div>
                             );
@@ -261,13 +261,13 @@ export default function Dashboard() {
                     </AreaChart>
                   </ResponsiveContainer>
                 ) : (
-                  <p className="text-[11px] text-slate-500 pt-2">Log 2+ weight entries for sparkline</p>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500 pt-2">Log 2+ weight entries for sparkline</p>
                 )}
               </div>
 
               <Link
                 to="/progress"
-                className="text-xs font-semibold text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1 pt-1"
+                className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 hover:text-cyan-500 dark:hover:text-cyan-300 inline-flex items-center gap-1 pt-1"
               >
                 Open progress charts <ChevronRight className="h-3.5 w-3.5" />
               </Link>
@@ -279,15 +279,15 @@ export default function Dashboard() {
       {/* Recent Activity Feeds */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Workouts */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl space-y-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm dark:shadow-xl space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Dumbbell className="h-5 w-5 text-emerald-400" />
-              <h3 className="text-base font-bold text-white">Recent Workouts</h3>
+              <Dumbbell className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Recent Workouts</h3>
             </div>
             <Link
               to="/workouts"
-              className="text-xs text-emerald-400 hover:underline font-medium"
+              className="text-xs text-emerald-600 dark:text-emerald-400 hover:underline font-medium"
             >
               View all
             </Link>
@@ -300,12 +300,12 @@ export default function Dashboard() {
               <ActivityItemSkeleton />
             </div>
           ) : recentWorkouts.length === 0 ? (
-            <div className="text-center py-6 px-4 rounded-xl border border-dashed border-slate-800 bg-slate-950/40 text-slate-500 text-xs">
+            <div className="text-center py-6 px-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 text-slate-400 dark:text-slate-500 text-xs">
               No workouts logged yet.
               <div className="mt-2">
                 <Link
                   to="/workouts"
-                  className="text-emerald-400 font-semibold hover:underline"
+                  className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline"
                 >
                   + Log your first workout
                 </Link>
@@ -316,20 +316,20 @@ export default function Dashboard() {
               {recentWorkouts.map((w) => (
                 <div
                   key={w._id}
-                  className="bg-slate-950 border border-slate-800 rounded-xl p-3 sm:p-3.5 flex items-center justify-between hover:border-slate-700 transition"
+                  className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 sm:p-3.5 flex items-center justify-between hover:border-slate-300 dark:hover:border-slate-700 transition"
                 >
                   <div>
-                    <h4 className="text-xs sm:text-sm font-bold text-white">
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
                       {w.name}
                     </h4>
-                    <p className="text-[11px] text-slate-400 capitalize">
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 capitalize">
                       {w.category} • {w.exercises?.length || 0} exercises •{' '}
                       {w.date ? new Date(w.date).toLocaleDateString() : 'N/A'}
                     </p>
                   </div>
                   <Link
                     to="/workouts"
-                    className="p-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-emerald-400 hover:bg-slate-800 transition"
+                    className="p-1.5 rounded-lg bg-white dark:bg-slate-900 text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
                   >
                     <ChevronRight className="h-4 w-4" />
                   </Link>
@@ -340,15 +340,15 @@ export default function Dashboard() {
         </div>
 
         {/* Recent Nutrition */}
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl space-y-4">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm dark:shadow-xl space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Apple className="h-5 w-5 text-amber-400" />
-              <h3 className="text-base font-bold text-white">Recent Meals</h3>
+              <Apple className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Recent Meals</h3>
             </div>
             <Link
               to="/nutrition"
-              className="text-xs text-amber-400 hover:underline font-medium"
+              className="text-xs text-amber-600 dark:text-amber-400 hover:underline font-medium"
             >
               View all
             </Link>
@@ -361,12 +361,12 @@ export default function Dashboard() {
               <ActivityItemSkeleton />
             </div>
           ) : recentNutrition.length === 0 ? (
-            <div className="text-center py-6 px-4 rounded-xl border border-dashed border-slate-800 bg-slate-950/40 text-slate-500 text-xs">
+            <div className="text-center py-6 px-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 text-slate-400 dark:text-slate-500 text-xs">
               No nutrition entries logged yet.
               <div className="mt-2">
                 <Link
                   to="/nutrition"
-                  className="text-amber-400 font-semibold hover:underline"
+                  className="text-amber-600 dark:text-amber-400 font-semibold hover:underline"
                 >
                   + Log your first meal
                 </Link>
@@ -382,25 +382,25 @@ export default function Dashboard() {
                 return (
                   <div
                     key={n._id}
-                    className="bg-slate-950 border border-slate-800 rounded-xl p-3 sm:p-3.5 flex items-center justify-between hover:border-slate-700 transition"
+                    className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 sm:p-3.5 flex items-center justify-between hover:border-slate-300 dark:hover:border-slate-700 transition"
                   >
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs sm:text-sm font-bold text-white capitalize">
+                        <span className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white capitalize">
                           {n.mealType}
                         </span>
-                        <span className="text-[10px] font-mono text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">
+                        <span className="text-[10px] font-mono text-amber-600 dark:text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded border border-amber-500/20">
                           {totalCal} kcal
                         </span>
                       </div>
-                      <p className="text-[11px] text-slate-400">
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400">
                         {n.foodItems?.length || 0} food items •{' '}
                         {n.date ? new Date(n.date).toLocaleDateString() : 'N/A'}
                       </p>
                     </div>
                     <Link
                       to="/nutrition"
-                      className="p-1.5 rounded-lg bg-slate-900 text-slate-400 hover:text-amber-300 hover:bg-slate-800 transition"
+                      className="p-1.5 rounded-lg bg-white dark:bg-slate-900 text-slate-400 hover:text-amber-600 dark:hover:text-amber-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
                     >
                       <ChevronRight className="h-4 w-4" />
                     </Link>

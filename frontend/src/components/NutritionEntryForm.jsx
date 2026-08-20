@@ -187,12 +187,12 @@ export default function NutritionEntryForm({
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 dark:bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
         {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
               {isDuplicate ? (
                 <Copy className="h-5 w-5" />
               ) : (
@@ -200,21 +200,21 @@ export default function NutritionEntryForm({
               )}
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                 {isDuplicate
                   ? 'Quick-Add / Duplicate Meal'
                   : isEditing
                   ? 'Edit Meal Entry'
                   : 'Log Meal Entry'}
               </h2>
-              <p className="text-xs text-slate-400 capitalize">
+              <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">
                 {formData.mealType} • {formData.date}
               </p>
             </div>
           </div>
           <button
             onClick={handleClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
@@ -223,7 +223,7 @@ export default function NutritionEntryForm({
         {/* Modal Form Body */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
           {errorMessage && (
-            <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center gap-3 text-rose-300 text-sm">
+            <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 flex items-center gap-3 text-rose-700 dark:text-rose-300 text-sm">
               <AlertCircle className="h-5 w-5 shrink-0" />
               <span>{errorMessage}</span>
             </div>
@@ -232,14 +232,14 @@ export default function NutritionEntryForm({
           {/* Meal Details */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                 Meal Category
               </label>
               <select
                 name="mealType"
                 value={formData.mealType}
                 onChange={handleChange}
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500 text-sm capitalize"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 text-sm capitalize"
               >
                 <option value="breakfast">Breakfast</option>
                 <option value="lunch">Lunch</option>
@@ -249,8 +249,8 @@ export default function NutritionEntryForm({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5 flex items-center gap-1">
-                <Calendar className="h-3.5 w-3.5 text-slate-400" />
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1">
+                <Calendar className="h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
                 Date
               </label>
               <input
@@ -258,20 +258,20 @@ export default function NutritionEntryForm({
                 name="date"
                 value={formData.date}
                 onChange={handleChange}
-                className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-white focus:outline-none focus:border-emerald-500 text-sm"
+                className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 text-sm"
                 required
               />
             </div>
           </div>
 
           {/* Dynamic Food Items List */}
-          <div className="pt-4 border-t border-slate-800 space-y-4">
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   Food Items ({formData.foodItems.length})
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   Track individual ingredients, calories, and macronutrients
                 </p>
               </div>
@@ -279,7 +279,7 @@ export default function NutritionEntryForm({
               <button
                 type="button"
                 onClick={handleAddFoodItem}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-emerald-400 border border-slate-700 text-xs font-semibold transition cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-emerald-600 dark:text-emerald-400 border border-slate-200 dark:border-slate-700 text-xs font-semibold transition cursor-pointer"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Add Food Item
@@ -287,7 +287,7 @@ export default function NutritionEntryForm({
             </div>
 
             {formData.foodItems.length === 0 ? (
-              <div className="text-center py-6 px-4 rounded-xl border border-dashed border-slate-800 bg-slate-950/40 text-slate-400 text-xs">
+              <div className="text-center py-6 px-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 text-slate-500 dark:text-slate-400 text-xs">
                 No food items added. Click "+ Add Food Item" above.
               </div>
             ) : (
@@ -295,7 +295,7 @@ export default function NutritionEntryForm({
                 {formData.foodItems.map((item, index) => (
                   <div
                     key={index}
-                    className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-3"
+                    className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3"
                   >
                     {/* Row 1: Name, Quantity, Unit, Remove */}
                     <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-center">
@@ -307,7 +307,7 @@ export default function NutritionEntryForm({
                           onChange={(e) =>
                             handleFoodItemChange(index, 'name', e.target.value)
                           }
-                          className="w-full px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white text-xs placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                          className="w-full px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-900 dark:text-white text-xs placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                           required
                         />
                       </div>
@@ -322,7 +322,7 @@ export default function NutritionEntryForm({
                           onChange={(e) =>
                             handleFoodItemChange(index, 'quantity', e.target.value)
                           }
-                          className="w-full px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white text-xs placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                          className="w-full px-2 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-900 dark:text-white text-xs placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                         />
                       </div>
 
@@ -334,7 +334,7 @@ export default function NutritionEntryForm({
                           onChange={(e) =>
                             handleFoodItemChange(index, 'unit', e.target.value)
                           }
-                          className="w-full px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white text-xs placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                          className="w-full px-2 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-900 dark:text-white text-xs placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                         />
                       </div>
 
@@ -342,7 +342,7 @@ export default function NutritionEntryForm({
                         <button
                           type="button"
                           onClick={() => handleRemoveFoodItem(index)}
-                          className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer"
+                          className="p-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition cursor-pointer"
                           title="Remove item"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -353,7 +353,7 @@ export default function NutritionEntryForm({
                     {/* Row 2: Macros (Calories, Protein, Carbs, Fat) */}
                     <div className="grid grid-cols-4 gap-2 pt-1">
                       <div>
-                        <label className="block text-[10px] text-amber-400 uppercase font-semibold mb-1">
+                        <label className="block text-[10px] text-amber-600 dark:text-amber-400 uppercase font-semibold mb-1">
                           Calories
                         </label>
                         <input
@@ -365,12 +365,12 @@ export default function NutritionEntryForm({
                           onChange={(e) =>
                             handleFoodItemChange(index, 'calories', e.target.value)
                           }
-                          className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white text-xs focus:outline-none focus:border-amber-500"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-900 dark:text-white text-xs focus:outline-none focus:border-amber-500"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[10px] text-cyan-400 uppercase font-semibold mb-1">
+                        <label className="block text-[10px] text-cyan-600 dark:text-cyan-400 uppercase font-semibold mb-1">
                           Protein (g)
                         </label>
                         <input
@@ -382,12 +382,12 @@ export default function NutritionEntryForm({
                           onChange={(e) =>
                             handleFoodItemChange(index, 'protein', e.target.value)
                           }
-                          className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white text-xs focus:outline-none focus:border-cyan-500"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-900 dark:text-white text-xs focus:outline-none focus:border-cyan-500"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[10px] text-emerald-400 uppercase font-semibold mb-1">
+                        <label className="block text-[10px] text-emerald-600 dark:text-emerald-400 uppercase font-semibold mb-1">
                           Carbs (g)
                         </label>
                         <input
@@ -399,12 +399,12 @@ export default function NutritionEntryForm({
                           onChange={(e) =>
                             handleFoodItemChange(index, 'carbs', e.target.value)
                           }
-                          className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white text-xs focus:outline-none focus:border-emerald-500"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-900 dark:text-white text-xs focus:outline-none focus:border-emerald-500"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-[10px] text-purple-400 uppercase font-semibold mb-1">
+                        <label className="block text-[10px] text-purple-600 dark:text-purple-400 uppercase font-semibold mb-1">
                           Fat (g)
                         </label>
                         <input
@@ -416,7 +416,7 @@ export default function NutritionEntryForm({
                           onChange={(e) =>
                             handleFoodItemChange(index, 'fat', e.target.value)
                           }
-                          className="w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-white text-xs focus:outline-none focus:border-purple-500"
+                          className="w-full px-2.5 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-slate-900 dark:text-white text-xs focus:outline-none focus:border-purple-500"
                         />
                       </div>
                     </div>
@@ -427,26 +427,26 @@ export default function NutritionEntryForm({
           </div>
 
           {/* Subtotal Preview */}
-          <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2 font-bold text-white">
-              <Flame className="h-4 w-4 text-amber-400" />
+          <div className="bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
+              <Flame className="h-4 w-4 text-amber-500 dark:text-amber-400" />
               <span>Entry Total: {subtotalCalories} kcal</span>
             </div>
-            <div className="flex items-center gap-3 text-[11px] font-mono text-slate-300">
-              <span className="text-cyan-400">P: {Math.round(subtotalProtein * 10) / 10}g</span>
-              <span className="text-emerald-400">C: {Math.round(subtotalCarbs * 10) / 10}g</span>
-              <span className="text-purple-400">F: {Math.round(subtotalFat * 10) / 10}g</span>
+            <div className="flex items-center gap-3 text-[11px] font-mono text-slate-600 dark:text-slate-300">
+              <span className="text-cyan-600 dark:text-cyan-400">P: {Math.round(subtotalProtein * 10) / 10}g</span>
+              <span className="text-emerald-600 dark:text-emerald-400">C: {Math.round(subtotalCarbs * 10) / 10}g</span>
+              <span className="text-purple-600 dark:text-purple-400">F: {Math.round(subtotalFat * 10) / 10}g</span>
             </div>
           </div>
         </form>
 
         {/* Modal Footer */}
-        <div className="px-6 py-4 border-t border-slate-800 bg-slate-950/40 flex items-center justify-end gap-3">
+        <div className="px-6 py-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 flex items-center justify-end gap-3">
           <button
             type="button"
             onClick={handleClose}
             disabled={isSubmitting}
-            className="px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 text-xs font-semibold transition cursor-pointer"
+            className="px-4 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-slate-800 text-xs font-semibold transition cursor-pointer"
           >
             Cancel
           </button>
