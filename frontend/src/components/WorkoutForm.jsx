@@ -13,11 +13,15 @@ import {
 
 export default function WorkoutForm({
   initialData,
+  workout,
   onSubmit,
   onCancel,
+  onClose,
   isSubmitting,
 }) {
-  const isEditing = Boolean(initialData?._id);
+  const activeInitialData = initialData || workout;
+  const handleClose = onCancel || onClose;
+  const isEditing = Boolean(activeInitialData?._id);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -31,17 +35,17 @@ export default function WorkoutForm({
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    if (initialData) {
+    if (activeInitialData) {
       setFormData({
-        name: initialData.name || '',
-        category: initialData.category || 'strength',
-        date: initialData.date
-          ? new Date(initialData.date).toISOString().split('T')[0]
+        name: activeInitialData.name || '',
+        category: activeInitialData.category || 'strength',
+        date: activeInitialData.date
+          ? new Date(activeInitialData.date).toISOString().split('T')[0]
           : new Date().toISOString().split('T')[0],
-        duration: initialData.duration || '',
-        tags: Array.isArray(initialData.tags) ? initialData.tags.join(', ') : '',
-        exercises: Array.isArray(initialData.exercises)
-          ? initialData.exercises.map((ex) => ({
+        duration: activeInitialData.duration || '',
+        tags: Array.isArray(activeInitialData.tags) ? activeInitialData.tags.join(', ') : '',
+        exercises: Array.isArray(activeInitialData.exercises)
+          ? activeInitialData.exercises.map((ex) => ({
               name: ex.name || '',
               sets: ex.sets || 1,
               reps: ex.reps || '',
@@ -51,7 +55,7 @@ export default function WorkoutForm({
           : [],
       });
     }
-  }, [initialData]);
+  }, [activeInitialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -152,7 +156,7 @@ export default function WorkoutForm({
             </h2>
           </div>
           <button
-            onClick={onCancel}
+            onClick={handleClose}
             className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
           >
             <X className="h-5 w-5" />
@@ -378,7 +382,7 @@ export default function WorkoutForm({
         <div className="px-6 py-4 border-t border-slate-800 bg-slate-950/40 flex items-center justify-end gap-3">
           <button
             type="button"
-            onClick={onCancel}
+            onClick={handleClose}
             disabled={isSubmitting}
             className="px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 text-xs font-semibold transition cursor-pointer"
           >

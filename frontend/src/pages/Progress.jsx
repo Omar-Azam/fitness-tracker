@@ -73,9 +73,12 @@ export default function Progress() {
       const nonWeightMetrics = avail.filter((m) => m.toLowerCase() !== 'weight');
       setAvailableMetrics(nonWeightMetrics);
 
-      if (nonWeightMetrics.length > 0 && !nonWeightMetrics.includes(selectedMetric)) {
-        setSelectedMetric(nonWeightMetrics[0]);
-      }
+      setSelectedMetric((prev) => {
+        if (nonWeightMetrics.length > 0 && !nonWeightMetrics.includes(prev)) {
+          return nonWeightMetrics[0];
+        }
+        return prev;
+      });
     } catch (err) {
       console.error('Failed to load progress data:', err);
       setError(err.message || 'Failed to load progress logs');
@@ -83,7 +86,7 @@ export default function Progress() {
     } finally {
       setLoading(false);
     }
-  }, [selectedMetric]);
+  }, [toast]);
 
   useEffect(() => {
     fetchData();
@@ -396,7 +399,7 @@ export default function Progress() {
           lengthUnit={lengthUnit}
           isSubmitting={isSubmitting}
           onSubmit={handleFormSubmit}
-          onClose={() => {
+          onCancel={() => {
             setIsFormOpen(false);
             setEditingLog(null);
           }}

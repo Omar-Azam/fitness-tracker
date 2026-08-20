@@ -5,6 +5,7 @@ export default function DeleteConfirmModal({
   isOpen,
   title,
   message,
+  confirmLabel,
   onConfirm,
   onCancel,
   isDeleting,
@@ -20,7 +21,7 @@ export default function DeleteConfirmModal({
           </div>
           <div>
             <h3 className="text-base font-bold text-white">
-              {title || 'Delete Workout'}
+              {title || 'Delete Item'}
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
               This action cannot be undone.
@@ -29,7 +30,7 @@ export default function DeleteConfirmModal({
         </div>
 
         <p className="text-xs text-slate-300">
-          {message || 'Are you sure you want to delete this workout from your log?'}
+          {message || 'Are you sure you want to delete this item?'}
         </p>
 
         <div className="flex items-center justify-end gap-3 pt-2">
@@ -55,7 +56,7 @@ export default function DeleteConfirmModal({
             ) : (
               <>
                 <Trash2 className="h-3.5 w-3.5" />
-                <span>Delete Workout</span>
+                <span>{confirmLabel || title || 'Delete'}</span>
               </>
             )}
           </button>

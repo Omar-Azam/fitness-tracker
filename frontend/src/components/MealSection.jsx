@@ -8,7 +8,7 @@ import {
   Edit2,
   Trash2,
   Copy,
-  Flame,
+  Utensils,
 } from 'lucide-react';
 
 const MEAL_ICONS = {

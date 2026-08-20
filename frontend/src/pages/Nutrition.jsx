@@ -353,12 +353,12 @@ export default function Nutrition() {
       {isFormOpen && (
         <NutritionEntryForm
           initialData={editingEntry}
-          initialMealType={selectedMealType}
+          defaultMealType={selectedMealType}
           isDuplicate={isDuplicate}
-          selectedDate={selectedDate}
+          defaultDate={selectedDate}
           isSubmitting={isSubmitting}
           onSubmit={handleFormSubmit}
-          onClose={() => {
+          onCancel={() => {
             setIsFormOpen(false);
             setEditingEntry(null);
             setIsDuplicate(false);

@@ -373,10 +373,10 @@ export default function Workouts() {
       {/* Workout Form Modal */}
       {isFormOpen && (
         <WorkoutForm
-          workout={editingWorkout}
+          initialData={editingWorkout}
           isSubmitting={isSubmitting}
           onSubmit={handleFormSubmit}
-          onClose={() => {
+          onCancel={() => {
             setIsFormOpen(false);
             setEditingWorkout(null);
           }}

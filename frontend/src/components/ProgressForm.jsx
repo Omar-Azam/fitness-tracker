@@ -15,10 +15,12 @@ export default function ProgressForm({
   initialData,
   onSubmit,
   onCancel,
+  onClose,
   isSubmitting,
   weightUnit = 'kg',
   lengthUnit = 'cm',
 }) {
+  const handleClose = onCancel || onClose;
   const isEditing = Boolean(initialData?._id);
 
   const [formData, setFormData] = useState({
@@ -178,7 +180,7 @@ export default function ProgressForm({
             </div>
           </div>
           <button
-            onClick={onCancel}
+            onClick={handleClose}
             className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
           >
             <X className="h-5 w-5" />
@@ -416,7 +418,7 @@ export default function ProgressForm({
         <div className="px-6 py-4 border-t border-slate-800 bg-slate-950/40 flex items-center justify-end gap-3">
           <button
             type="button"
-            onClick={onCancel}
+            onClick={handleClose}
             disabled={isSubmitting}
             className="px-4 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 text-xs font-semibold transition cursor-pointer"
           >

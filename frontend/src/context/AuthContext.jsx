@@ -17,9 +17,11 @@ export const AuthProvider = ({ children }) => {
     if (theme === 'light') {
       document.documentElement.classList.remove('dark');
       document.documentElement.classList.add('light');
+      localStorage.setItem('fitness_theme', 'light');
     } else {
       document.documentElement.classList.remove('light');
       document.documentElement.classList.add('dark');
+      localStorage.setItem('fitness_theme', 'dark');
     }
   }, [user?.preferences?.theme]);
 

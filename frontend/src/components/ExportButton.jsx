@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Download, FileSpreadsheet, FileText, ChevronDown, Loader2 } from 'lucide-react';
 import api from '../services/api';
+import { useToast } from '../context/ToastContext';
 
 export default function ExportButton({ endpoint, resourceName = 'data' }) {
+  const toast = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportFormat, setExportFormat] = useState('');
@@ -43,7 +45,7 @@ export default function ExportButton({ endpoint, resourceName = 'data' }) {
       window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error('Export download failed:', err);
-      alert('Failed to export data. Please try again.');
+      toast.error('Failed to export data. Please try again.');
     } finally {
       setIsExporting(false);
       setExportFormat('');

@@ -26,11 +26,14 @@ const CustomTooltip = ({ active, payload, label, unit }) => {
 
 export default function TrendsChart({
   data = [],
+  title,
   metricName = 'Weight',
   unit = 'kg',
   height = 280,
   color = '#10b981', // emerald-500
 }) {
+  const activeName = title || metricName;
+
   if (!data || data.length === 0) {
     return (
       <div
@@ -42,7 +45,7 @@ export default function TrendsChart({
         </div>
         <p className="text-sm font-bold text-white">No trend data recorded</p>
         <p className="text-xs text-slate-400 max-w-xs mt-1">
-          Log a few entries over time to visualize your {metricName.toLowerCase()} trend.
+          Log a few entries over time to visualize your {activeName.toLowerCase()} trend.
         </p>
       </div>
     );
@@ -75,7 +78,7 @@ export default function TrendsChart({
     Math.ceil(maxVal + padding),
   ];
 
-  const gradientId = `trendGradient_${metricName.replace(/\s+/g, '_')}`;
+  const gradientId = `trendGradient_${activeName.replace(/[^a-zA-Z0-9]/g, '_')}`;
 
   return (
     <div className="w-full" style={{ height }}>
