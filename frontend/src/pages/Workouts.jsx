@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 import { useToast } from '../context/ToastContext';
 import WorkoutCard from '../components/WorkoutCard';
@@ -327,16 +328,36 @@ export default function Workouts() {
       ) : (
         <>
           {/* Workouts Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+          <motion.div
+            initial="hidden"
+            animate="show"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.04,
+                },
+              },
+            }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5"
+          >
             {workouts.map((workout) => (
-              <WorkoutCard
+              <motion.div
                 key={workout._id}
-                workout={workout}
-                onEdit={handleOpenEdit}
-                onDelete={handleDeleteClick}
-              />
+                variants={{
+                  hidden: { opacity: 0, y: 10 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.22, ease: 'easeOut' } },
+                }}
+              >
+                <WorkoutCard
+                  workout={workout}
+                  onEdit={handleOpenEdit}
+                  onDelete={handleDeleteClick}
+                />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
@@ -350,7 +371,7 @@ export default function Workouts() {
                 <button
                   disabled={page <= 1}
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-white dark:disabled:hover:bg-slate-900 transition cursor-pointer"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-white dark:disabled:hover:bg-slate-900 transition cursor-pointer active:scale-95"
                 >
                   <ChevronLeft className="h-4 w-4" />
                   <span>Previous</span>
@@ -359,7 +380,7 @@ export default function Workouts() {
                 <button
                   disabled={page >= totalPages}
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-white dark:disabled:hover:bg-slate-900 transition cursor-pointer"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-white dark:disabled:hover:bg-slate-900 transition cursor-pointer active:scale-95"
                 >
                   <span>Next</span>
                   <ChevronRight className="h-4 w-4" />
@@ -371,27 +392,33 @@ export default function Workouts() {
       )}
 
       {/* Workout Form Modal */}
-      {isFormOpen && (
-        <WorkoutForm
-          initialData={editingWorkout}
-          isSubmitting={isSubmitting}
-          onSubmit={handleFormSubmit}
-          onCancel={() => {
-            setIsFormOpen(false);
-            setEditingWorkout(null);
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {isFormOpen && (
+          <WorkoutForm
+            initialData={editingWorkout}
+            isSubmitting={isSubmitting}
+            onSubmit={handleFormSubmit}
+            onCancel={() => {
+              setIsFormOpen(false);
+              setEditingWorkout(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Delete Confirmation Modal */}
-      <DeleteConfirmModal
-        isOpen={!!workoutToDelete}
-        title="Delete Workout"
-        message={`Are you sure you want to delete "${workoutToDelete?.name}"? This action cannot be undone.`}
-        isDeleting={isDeleting}
-        onConfirm={handleConfirmDelete}
-        onCancel={() => setWorkoutToDelete(null)}
-      />
+      <AnimatePresence>
+        {workoutToDelete && (
+          <DeleteConfirmModal
+            isOpen={!!workoutToDelete}
+            title="Delete Workout"
+            message={`Are you sure you want to delete "${workoutToDelete?.name}"? This action cannot be undone.`}
+            isDeleting={isDeleting}
+            onConfirm={handleConfirmDelete}
+            onCancel={() => setWorkoutToDelete(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

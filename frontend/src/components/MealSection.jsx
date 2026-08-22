@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import {
   Coffee,
   Sun,
@@ -113,16 +114,19 @@ export default function MealSection({
         </div>
       ) : (
         <div className="space-y-3">
-          {entries.map((entry) => {
+          {entries.map((entry, idx) => {
             const entryCalories = entry.foodItems?.reduce(
               (acc, item) => acc + (Number(item.calories) || 0),
               0
             );
 
             return (
-              <div
+              <motion.div
                 key={entry._id}
-                className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 space-y-2.5 hover:border-slate-300 dark:hover:border-slate-700/80 transition"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: idx * 0.03, ease: 'easeOut' }}
+                className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-3.5 space-y-2.5 hover:border-slate-300 dark:hover:border-slate-700/80 transition"
               >
                 {/* Entry Header: Summary & Action Buttons */}
                 <div className="flex items-center justify-between gap-2">
@@ -139,21 +143,21 @@ export default function MealSection({
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => onDuplicate(entry)}
-                      className="p-1 rounded-lg text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-300 hover:bg-white dark:hover:bg-slate-900 transition cursor-pointer"
+                      className="p-1 rounded-lg text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-300 hover:bg-white dark:hover:bg-slate-900 transition cursor-pointer active:scale-90"
                       title="Quick-add / Duplicate meal"
                     >
                       <Copy className="h-3.5 w-3.5" />
                     </button>
                     <button
                       onClick={() => onEdit(entry)}
-                      className="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-900 transition cursor-pointer"
+                      className="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-slate-900 transition cursor-pointer active:scale-90"
                       title="Edit entry"
                     >
                       <Edit2 className="h-3.5 w-3.5" />
                     </button>
                     <button
                       onClick={() => onDelete(entry)}
-                      className="p-1 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition cursor-pointer"
+                      className="p-1 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition cursor-pointer active:scale-90"
                       title="Delete entry"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -163,9 +167,9 @@ export default function MealSection({
 
                 {/* Items List */}
                 <div className="space-y-1 pt-1 border-t border-slate-200 dark:border-slate-900">
-                  {entry.foodItems?.map((item, idx) => (
+                  {entry.foodItems?.map((item, itemIdx) => (
                     <div
-                      key={idx}
+                      key={itemIdx}
                       className="flex items-center justify-between text-xs text-slate-700 dark:text-slate-300 py-0.5"
                     >
                       <div className="flex items-center gap-2 truncate">
@@ -180,7 +184,7 @@ export default function MealSection({
 
                       <div className="flex items-center gap-2 text-[11px] font-mono shrink-0 ml-2">
                         {item.calories > 0 && (
-                          <span className="text-slate-700 dark:text-slate-300">{item.calories} cal</span>
+                          <span className="text-slate-700 dark:text-slate-300 font-semibold">{item.calories} cal</span>
                         )}
                         {(item.protein > 0 || item.carbs > 0 || item.fat > 0) && (
                           <span className="text-slate-400 dark:text-slate-500 text-[10px] hidden sm:inline">
@@ -191,7 +195,7 @@ export default function MealSection({
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

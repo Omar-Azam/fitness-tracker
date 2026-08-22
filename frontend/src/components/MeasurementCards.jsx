@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import {
   TrendingUp,
   TrendingDown,
@@ -34,7 +35,7 @@ export default function MeasurementCards({
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-      {MEASUREMENT_CONFIG.map(({ key, label, isTopLevel }) => {
+      {MEASUREMENT_CONFIG.map(({ key, label, isTopLevel }, index) => {
         const unit = key === 'weight' ? weightUnit : lengthUnit;
         const current = getMeasurementVal(latestLog, key, isTopLevel);
         const prev = getMeasurementVal(previousLog, key, isTopLevel);
@@ -50,9 +51,12 @@ export default function MeasurementCards({
         const isWeight = key === 'weight';
 
         return (
-          <div
+          <motion.div
             key={key}
-            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm dark:shadow-lg flex flex-col justify-between space-y-2 hover:border-slate-300 dark:hover:border-slate-700 transition"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.2, delay: index * 0.03, ease: 'easeOut' }}
+            className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-4 shadow-sm dark:shadow-lg flex flex-col justify-between space-y-2 hover:border-slate-300 dark:hover:border-slate-700 transition"
           >
             <div className="flex items-center justify-between">
               <span className="text-[11px] uppercase font-bold text-slate-500 dark:text-slate-400">
@@ -95,7 +99,7 @@ export default function MeasurementCards({
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
         );
       })}
     </div>

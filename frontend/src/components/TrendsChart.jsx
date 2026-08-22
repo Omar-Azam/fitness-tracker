@@ -132,6 +132,9 @@ export default function TrendsChart({
             strokeWidth={2.5}
             fillOpacity={1}
             fill={`url(#${gradientId})`}
+            isAnimationActive={true}
+            animationDuration={350}
+            animationEasing="ease-out"
             dot={{ r: 3, fill: color, strokeWidth: 1.5, stroke: dotStroke }}
             activeDot={{ r: 6, fill: '#ffffff', stroke: color, strokeWidth: 2 }}
           />

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
@@ -307,7 +308,7 @@ export default function Progress() {
           </div>
         ) : (
           <div className="space-y-3">
-            {logs.map((log) => {
+            {logs.map((log, idx) => {
               const dateStr = log.date
                 ? new Date(log.date).toLocaleDateString(undefined, {
                     weekday: 'short',
@@ -321,15 +322,18 @@ export default function Progress() {
               const perf = log.performanceMetrics || [];
 
               return (
-                <div
+                <motion.div
                   key={log._id}
-                  className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-300 dark:hover:border-slate-700 transition"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.2, delay: idx * 0.02, ease: 'easeOut' }}
+                  className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-300 dark:hover:border-slate-700 transition"
                 >
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2.5">
                       <span className="text-sm font-bold text-slate-900 dark:text-white">{dateStr}</span>
                       {log.weight !== undefined && log.weight !== null && (
-                        <span className="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-300 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20">
+                        <span className="text-xs font-mono font-bold text-cyan-600 dark:text-cyan-300 bg-cyan-500/10 px-2.5 py-0.5 rounded-lg border border-cyan-500/20">
                           {log.weight} {weightUnit}
                         </span>
                       )}
@@ -338,25 +342,25 @@ export default function Progress() {
                     {/* Summary Badges */}
                     <div className="flex flex-wrap gap-2 text-[11px] text-slate-600 dark:text-slate-400">
                       {m.waist && (
-                        <span className="bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-800">
+                        <span className="bg-white dark:bg-slate-900 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-800">
                           Waist: {m.waist} {lengthUnit}
                         </span>
                       )}
                       {m.chest && (
-                        <span className="bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-800">
+                        <span className="bg-white dark:bg-slate-900 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-800">
                           Chest: {m.chest} {lengthUnit}
                         </span>
                       )}
                       {m.arms && (
-                        <span className="bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-800">
+                        <span className="bg-white dark:bg-slate-900 px-2 py-0.5 rounded-md border border-slate-200 dark:border-slate-800">
                           Arms: {m.arms} {lengthUnit}
                         </span>
                       )}
                       {perf.length > 0 &&
-                        perf.map((p, idx) => (
+                        perf.map((p, pIdx) => (
                           <span
-                            key={idx}
-                            className="bg-amber-500/10 text-amber-600 dark:text-amber-300 px-2 py-0.5 rounded border border-amber-500/20"
+                            key={pIdx}
+                            className="bg-amber-500/10 text-amber-600 dark:text-amber-300 px-2 py-0.5 rounded-md border border-amber-500/20"
                           >
                             {p.metricName}: {p.value} {p.unit}
                           </span>
@@ -371,20 +375,20 @@ export default function Progress() {
                         setEditingLog(log);
                         setIsFormOpen(true);
                       }}
-                      className="p-2 rounded-lg bg-white dark:bg-slate-900 text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                      className="p-2 rounded-xl bg-white dark:bg-slate-900 text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer active:scale-90"
                       title="Edit Log"
                     >
                       <Edit2 className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => setLogToDelete(log)}
-                      className="p-2 rounded-lg bg-white dark:bg-slate-900 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition cursor-pointer"
+                      className="p-2 rounded-xl bg-white dark:bg-slate-900 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition cursor-pointer active:scale-90"
                       title="Delete Log"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -392,29 +396,35 @@ export default function Progress() {
       </div>
 
       {/* Progress Form Modal */}
-      {isFormOpen && (
-        <ProgressForm
-          initialData={editingLog}
-          weightUnit={weightUnit}
-          lengthUnit={lengthUnit}
-          isSubmitting={isSubmitting}
-          onSubmit={handleFormSubmit}
-          onCancel={() => {
-            setIsFormOpen(false);
-            setEditingLog(null);
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {isFormOpen && (
+          <ProgressForm
+            initialData={editingLog}
+            weightUnit={weightUnit}
+            lengthUnit={lengthUnit}
+            isSubmitting={isSubmitting}
+            onSubmit={handleFormSubmit}
+            onCancel={() => {
+              setIsFormOpen(false);
+              setEditingLog(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Delete Confirmation Modal */}
-      <DeleteConfirmModal
-        isOpen={!!logToDelete}
-        title="Delete Progress Log"
-        message="Are you sure you want to delete this progress entry? This will remove these data points from your trend charts."
-        isDeleting={isDeleting}
-        onConfirm={handleConfirmDelete}
-        onCancel={() => setLogToDelete(null)}
-      />
+      <AnimatePresence>
+        {logToDelete && (
+          <DeleteConfirmModal
+            isOpen={!!logToDelete}
+            title="Delete Progress Log"
+            message="Are you sure you want to delete this progress entry? This will remove these data points from your trend charts."
+            isDeleting={isDeleting}
+            onConfirm={handleConfirmDelete}
+            onCancel={() => setLogToDelete(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

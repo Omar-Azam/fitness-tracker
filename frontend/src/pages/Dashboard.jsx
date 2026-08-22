@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
 import {
@@ -155,7 +156,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* KPI Cards & Sparkline Overview */}
+      {/* Top 3 Momentum KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {loadingDashboard ? (
           <>
@@ -166,7 +167,12 @@ export default function Dashboard() {
         ) : (
           <>
             {/* Card 1: Workouts Momentum */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm dark:shadow-xl flex flex-col justify-between space-y-4 hover:border-emerald-500/40 transition-all duration-200 group">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.22, delay: 0.02, ease: 'easeOut' }}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm dark:shadow-xl flex flex-col justify-between space-y-4 hover:border-emerald-500/40 transition-all duration-200 group"
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-2.5 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 group-hover:scale-105 transition-transform">
@@ -216,10 +222,15 @@ export default function Dashboard() {
                   Workouts <ChevronRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 2: Nutrition Consistency */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm dark:shadow-xl flex flex-col justify-between space-y-4 hover:border-amber-500/40 transition-all duration-200 group">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.22, delay: 0.05, ease: 'easeOut' }}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm dark:shadow-xl flex flex-col justify-between space-y-4 hover:border-amber-500/40 transition-all duration-200 group"
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-2.5 rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 group-hover:scale-105 transition-transform">
@@ -275,10 +286,15 @@ export default function Dashboard() {
                   Nutrition <ChevronRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
-            </div>
+            </motion.div>
 
             {/* Card 3: Weight Trend & Mini Sparkline */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm dark:shadow-xl flex flex-col justify-between space-y-3 sm:col-span-2 lg:col-span-1 hover:border-cyan-500/40 transition-all duration-200 group">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.22, delay: 0.08, ease: 'easeOut' }}
+              className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm dark:shadow-xl flex flex-col justify-between space-y-3 sm:col-span-2 lg:col-span-1 hover:border-cyan-500/40 transition-all duration-200 group"
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-2.5 rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 group-hover:scale-105 transition-transform">
@@ -337,6 +353,9 @@ export default function Dashboard() {
                           stroke="#06b6d4"
                           strokeWidth={2}
                           fill="url(#dashboardSparkGrad)"
+                          isAnimationActive={true}
+                          animationDuration={350}
+                          animationEasing="ease-out"
                         />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -350,7 +369,7 @@ export default function Dashboard() {
 
               <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
                 <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                  {weightSparkline.length} entries on record
+                  Daily fluctuations are natural
                 </span>
                 <Link
                   to="/progress"
@@ -359,7 +378,7 @@ export default function Dashboard() {
                   Trends <ChevronRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
-            </div>
+            </motion.div>
           </>
         )}
       </div>
@@ -419,7 +438,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="space-y-2.5">
-              {recentWorkouts.map((w) => {
+              {recentWorkouts.map((w, idx) => {
                 const categoryColor =
                   w.category === 'strength'
                     ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
@@ -430,8 +449,11 @@ export default function Dashboard() {
                     : 'text-purple-600 dark:text-purple-400 bg-purple-500/10 border-purple-500/20';
 
                 return (
-                  <div
+                  <motion.div
                     key={w._id}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2, delay: idx * 0.03, ease: 'easeOut' }}
                     className="bg-slate-50/80 dark:bg-slate-950/70 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-3.5 flex items-center justify-between hover:border-slate-300 dark:hover:border-slate-700 transition group"
                   >
                     <div className="space-y-1">
@@ -453,12 +475,12 @@ export default function Dashboard() {
                     </div>
                     <Link
                       to="/workouts"
-                      className="p-2 rounded-xl bg-white dark:bg-slate-900 text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 border border-slate-200 dark:border-slate-800 shadow-xs transition group-hover:scale-105"
+                      className="p-2 rounded-xl bg-white dark:bg-slate-900 text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 border border-slate-200 dark:border-slate-800 shadow-xs transition group-hover:scale-105 active:scale-90"
                       title="View workout"
                     >
                       <ChevronRight className="h-4 w-4" />
                     </Link>
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
@@ -510,7 +532,7 @@ export default function Dashboard() {
               </div>
               <Link
                 to="/nutrition"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-450 text-slate-950 text-xs font-extrabold transition-all shadow-md shadow-amber-500/20"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-450 text-slate-950 text-xs font-extrabold transition-all shadow-md shadow-amber-500/20 active:scale-95"
               >
                 <Plus className="h-3.5 w-3.5 stroke-[3]" />
                 <span>Log First Meal</span>
@@ -518,7 +540,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="space-y-2.5">
-              {recentNutrition.map((n) => {
+              {recentNutrition.map((n, idx) => {
                 const totalCal = n.foodItems?.reduce(
                   (acc, item) => acc + (Number(item.calories) || 0),
                   0
@@ -529,8 +551,11 @@ export default function Dashboard() {
                 );
 
                 return (
-                  <div
+                  <motion.div
                     key={n._id}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2, delay: idx * 0.03, ease: 'easeOut' }}
                     className="bg-slate-50/80 dark:bg-slate-950/70 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl p-3.5 flex items-center justify-between hover:border-slate-300 dark:hover:border-slate-700 transition group"
                   >
                     <div className="space-y-1">
@@ -554,12 +579,12 @@ export default function Dashboard() {
                     </div>
                     <Link
                       to="/nutrition"
-                      className="p-2 rounded-xl bg-white dark:bg-slate-900 text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 border border-slate-200 dark:border-slate-800 shadow-xs transition group-hover:scale-105"
+                      className="p-2 rounded-xl bg-white dark:bg-slate-900 text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 border border-slate-200 dark:border-slate-800 shadow-xs transition group-hover:scale-105 active:scale-90"
                       title="View nutrition"
                     >
                       <ChevronRight className="h-4 w-4" />
                     </Link>
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>

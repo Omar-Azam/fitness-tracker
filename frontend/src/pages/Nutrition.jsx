@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import api from '../services/api';
 import { useToast } from '../context/ToastContext';
 import MealSection from '../components/MealSection';
@@ -310,7 +311,18 @@ export default function Nutrition() {
           <CardSkeleton />
         </div>
       ) : (
-        <div className="space-y-4 sm:space-y-6">
+        <motion.div
+          initial="hidden"
+          animate="show"
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: { staggerChildren: 0.05 },
+            },
+          }}
+          className="space-y-4 sm:space-y-6"
+        >
           <MealSection
             mealType="breakfast"
             title="Breakfast"
@@ -350,35 +362,41 @@ export default function Nutrition() {
             onDuplicate={handleOpenDuplicate}
             onDelete={handleDeleteClick}
           />
-        </div>
+        </motion.div>
       )}
 
       {/* Nutrition Form Modal */}
-      {isFormOpen && (
-        <NutritionEntryForm
-          initialData={editingEntry}
-          defaultMealType={selectedMealType}
-          isDuplicate={isDuplicate}
-          defaultDate={selectedDate}
-          isSubmitting={isSubmitting}
-          onSubmit={handleFormSubmit}
-          onCancel={() => {
-            setIsFormOpen(false);
-            setEditingEntry(null);
-            setIsDuplicate(false);
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {isFormOpen && (
+          <NutritionEntryForm
+            initialData={editingEntry}
+            defaultMealType={selectedMealType}
+            isDuplicate={isDuplicate}
+            defaultDate={selectedDate}
+            isSubmitting={isSubmitting}
+            onSubmit={handleFormSubmit}
+            onCancel={() => {
+              setIsFormOpen(false);
+              setEditingEntry(null);
+              setIsDuplicate(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Delete Confirmation Modal */}
-      <DeleteConfirmModal
-        isOpen={!!entryToDelete}
-        title="Delete Nutrition Entry"
-        message={`Are you sure you want to delete this ${entryToDelete?.mealType} entry? This will update your daily calorie totals.`}
-        isDeleting={isDeleting}
-        onConfirm={handleConfirmDelete}
-        onCancel={() => setEntryToDelete(null)}
-      />
+      <AnimatePresence>
+        {entryToDelete && (
+          <DeleteConfirmModal
+            isOpen={!!entryToDelete}
+            title="Delete Nutrition Entry"
+            message={`Are you sure you want to delete this ${entryToDelete?.mealType} entry? This will update your daily calorie totals.`}
+            isDeleting={isDeleting}
+            onConfirm={handleConfirmDelete}
+            onCancel={() => setEntryToDelete(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

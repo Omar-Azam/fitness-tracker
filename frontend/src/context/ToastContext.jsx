@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { CheckCircle2, AlertCircle, Info, AlertTriangle, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const ToastContext = createContext(null);
 
@@ -38,39 +39,46 @@ export const ToastProvider = ({ children }) => {
         aria-live="polite"
         className="fixed top-4 right-4 left-4 sm:left-auto sm:right-6 sm:max-w-sm z-50 flex flex-col gap-2.5 pointer-events-none"
       >
-        {toasts.map((t) => {
-          let bg = 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200';
-          let icon = <Info className="h-5 w-5 text-cyan-600 dark:text-cyan-400 shrink-0" />;
+        <AnimatePresence mode="popLayout">
+          {toasts.map((t) => {
+            let bg = 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200';
+            let icon = <Info className="h-5 w-5 text-cyan-600 dark:text-cyan-400 shrink-0" />;
 
-          if (t.type === 'success') {
-            bg = 'bg-emerald-50 dark:bg-emerald-950/90 border-emerald-200 dark:border-emerald-500/30 text-emerald-900 dark:text-emerald-100';
-            icon = <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0" />;
-          } else if (t.type === 'error') {
-            bg = 'bg-rose-50 dark:bg-rose-950/90 border-rose-200 dark:border-rose-500/30 text-rose-900 dark:text-rose-100';
-            icon = <AlertCircle className="h-5 w-5 text-rose-600 dark:text-rose-400 shrink-0" />;
-          } else if (t.type === 'warning') {
-            bg = 'bg-amber-50 dark:bg-amber-950/90 border-amber-200 dark:border-amber-500/30 text-amber-900 dark:text-amber-100';
-            icon = <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0" />;
-          }
+            if (t.type === 'success') {
+              bg = 'bg-emerald-50/95 dark:bg-emerald-950/90 border-emerald-300 dark:border-emerald-500/30 text-emerald-900 dark:text-emerald-100 shadow-emerald-500/10';
+              icon = <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0" />;
+            } else if (t.type === 'error') {
+              bg = 'bg-rose-50/95 dark:bg-rose-950/90 border-rose-300 dark:border-rose-500/30 text-rose-900 dark:text-rose-100 shadow-rose-500/10';
+              icon = <AlertCircle className="h-5 w-5 text-rose-600 dark:text-rose-400 shrink-0" />;
+            } else if (t.type === 'warning') {
+              bg = 'bg-amber-50/95 dark:bg-amber-950/90 border-amber-300 dark:border-amber-500/30 text-amber-900 dark:text-amber-100 shadow-amber-500/10';
+              icon = <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 shrink-0" />;
+            }
 
-          return (
-            <div
-              key={t.id}
-              className={`pointer-events-auto flex items-start justify-between gap-3 p-3.5 rounded-2xl border shadow-xl backdrop-blur-md transition-all duration-200 animate-in fade-in slide-in-from-top-2 ${bg}`}
-            >
-              <div className="flex items-start gap-2.5">
-                {icon}
-                <p className="text-xs sm:text-sm font-medium leading-snug pt-0.5">{t.message}</p>
-              </div>
-              <button
-                onClick={() => removeToast(t.id)}
-                className="text-slate-400 hover:text-white p-0.5 rounded-lg hover:bg-white/10 transition cursor-pointer shrink-0"
+            return (
+              <motion.div
+                key={t.id}
+                layout
+                initial={{ opacity: 0, y: -16, scale: 0.94 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -12, scale: 0.94, transition: { duration: 0.15 } }}
+                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                className={`pointer-events-auto flex items-start justify-between gap-3 p-3.5 rounded-2xl border shadow-xl backdrop-blur-md ${bg}`}
               >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-          );
-        })}
+                <div className="flex items-start gap-2.5">
+                  {icon}
+                  <p className="text-xs sm:text-sm font-medium leading-snug pt-0.5">{t.message}</p>
+                </div>
+                <button
+                  onClick={() => removeToast(t.id)}
+                  className="text-slate-400 hover:text-slate-900 dark:hover:text-white p-0.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/10 transition cursor-pointer shrink-0"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
       </div>
     </ToastContext.Provider>
   );
